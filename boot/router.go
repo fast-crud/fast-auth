@@ -3,6 +3,7 @@ package boot
 import (
 	"github.com/flipped-aurora/gf-vue-admin/app/controller/api"
 	"github.com/flipped-aurora/gf-vue-admin/app/controller/manager"
+	"github.com/flipped-aurora/gf-vue-admin/app/router/middleware"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 )
@@ -12,7 +13,8 @@ var Routers = new(_router)
 type _router struct{}
 
 func (r *_router) Register() {
-
+	g.Server().Use(ghttp.MiddlewareHandlerResponse)
+	g.Server().Use(middleware.Casbin)
 	g.Server().Group("/api/user", func(group *ghttp.RouterGroup) {
 		group.Bind(new(api.UserController))
 	})

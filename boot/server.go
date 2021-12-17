@@ -2,8 +2,6 @@ package boot
 
 import (
 	"fmt"
-	"github.com/gogf/gf/v2/net/ghttp"
-
 	"github.com/gogf/gf/v2/frame/g"
 	"go.uber.org/zap"
 )
@@ -17,7 +15,6 @@ func (s *_server) Initialize() {
 	//address := g.Cfg().GetString("server.address")
 	server.SetIndexFolder(true)
 	server.AddStaticPath("/form-generator", "public/page")
-	server.Use(ghttp.MiddlewareHandlerResponse)
 	Routers.Register()
 	server.SetPort()
 	//server.Plugin(&swagger.Swagger{})

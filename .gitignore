@@ -1,0 +1,36 @@
+.DS_Store
+
+# local env files
+.env.local
+.env.*.local
+
+# Log folder
+dump.rdb
+server/dump.rdb
+
+# Log files
+web/npm-debug.log*
+web/yarn-debug.log*
+web/yarn-error.log*
+web/yarn.lock
+
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.iml
+
+
+uploads/file/
+chunk/
+finish/
+logs/
+latest_log
+
+# web
+web/node_modules/
+web/dist/

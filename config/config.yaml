@@ -1,0 +1,17 @@
+# HTTP Server
+server:
+  address: ':8199'
+  graceful: true
+  log-path: './logs/server'
+  dump-router-map: true
+  access-log-enabled: true
+  error-log-enabled: true
+  openapiPath: "/api.json"
+  swaggerPath: "/swagger"
+
+# Logger
+logger:
+  path: './logs/log'
+  level: 'all'
+  stdout: true
+  

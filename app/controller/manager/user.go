@@ -3,6 +3,7 @@ package manager
 import (
 	"context"
 	"github.com/flipped-aurora/gf-vue-admin/app/model/basic/res"
+	model "github.com/flipped-aurora/gf-vue-admin/app/model/system"
 	"github.com/flipped-aurora/gf-vue-admin/app/model/system/request"
 	"github.com/flipped-aurora/gf-vue-admin/app/service/system"
 	"github.com/flipped-aurora/gf-vue-admin/library/auth"
@@ -19,8 +20,11 @@ type RegisterReq struct {
 	Password string `json:"password"`
 	NickName string `json:"nickName"`
 }
+type RegisterRes struct {
+	Id uint
+}
 
-func (UserController) Add(ctx context.Context, req *RegisterReq) (res.CommonRes, error) {
+func (UserController) Add(ctx context.Context, req *RegisterReq) (*RegisterRes, error) {
 	var info = request.UserRegister{
 		Avatar:   req.Avatar,
 		Username: req.Username,
@@ -29,22 +33,25 @@ func (UserController) Add(ctx context.Context, req *RegisterReq) (res.CommonRes,
 	}
 	data, err := system.UserService.Register(&info)
 	if err != nil {
-		return res.Error("注册失败！", err), err
+		return nil, err
 	}
-	return res.Success(g.Map{"user": data}), nil
+	return &RegisterRes{Id: data.Id}, nil
 }
 
 type GetReq struct {
 	g.Meta `path:"/get" method:"post"`
 	Id     uint `json:"id" example:"id"`
 }
+type GetRes struct {
+	model.User
+}
 
-func (UserController) Get(ctx context.Context, req *GetReq) (res.CommonRes, error) {
+func (UserController) Get(ctx context.Context, req *GetReq) (res *GetRes, err error) {
 	data, err := system.UserService.GetById(req.Id)
 	if err != nil {
-		return res.Error("获取用户信息失败！", err), err
+		return nil, err
 	}
-	return res.Success(g.Map{"userInfo": data}), nil
+	return &GetRes{*data}, nil
 }
 
 type UpdateReq struct {
@@ -53,7 +60,7 @@ type UpdateReq struct {
 	NickName string `json:"nickName" example:"用户昵称"`
 }
 
-func (UserController) Update(ctx context.Context, req *UpdateReq) (res.CommonRes, error) {
+func (UserController) Update(ctx context.Context, req *UpdateReq) (*res.BlankRes, error) {
 	var request = g.RequestFromCtx(ctx)
 	var id = auth.Claims.GetUserInfo(request).Id
 	var info = system.UserUpdateParams{
@@ -62,11 +69,11 @@ func (UserController) Update(ctx context.Context, req *UpdateReq) (res.CommonRes
 		NickName: req.NickName,
 	}
 
-	data, err := system.UserService.Update(&info)
+	_, err := system.UserService.Update(&info)
 	if err != nil {
-		return res.Error("更新失败！", err), err
+		return nil, err
 	}
-	return res.Success(data), nil
+	return &res.BlankRes{}, nil
 }
 
 type ResetPasswordReq struct {
@@ -75,11 +82,11 @@ type ResetPasswordReq struct {
 	NewPassword string `json:"newPassword" example:"新密码"`
 }
 
-func (UserController) ResetPassword(ctx context.Context, req *ResetPasswordReq) (res.CommonRes, error) {
+func (UserController) ResetPassword(ctx context.Context, req *ResetPasswordReq) (*res.BlankRes, error) {
 	if err := system.UserService.ResetPassword(req.Id, req.NewPassword); err != nil {
-		return res.Error("修改失败！", err), err
+		return nil, err
 	}
-	return res.Success(nil), nil
+	return res.NewBlankRes(), nil
 }
 
 type DeleteReq struct {
@@ -87,12 +94,12 @@ type DeleteReq struct {
 	Id     uint `json:"id" example:"id"`
 }
 
-func (UserController) Delete(ctx context.Context, req *DeleteReq) (res.CommonRes, error) {
+func (UserController) Delete(ctx context.Context, req *DeleteReq) (*res.BlankRes, error) {
 	if req.Id == 0 {
-		return res.Error("id不能为空", nil), errors.New("id不能为空")
+		return nil, errors.New("id不能为空")
 	}
 	if err := system.UserService.Delete(req.Id); err != nil {
-		return res.Error("删除失败", err), err
+		return nil, err
 	}
-	return res.Success(nil), nil
+	return res.NewBlankRes(), nil
 }

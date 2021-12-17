@@ -48,7 +48,7 @@ func (userService *userService) Register(info *request.UserRegister) (data *syst
 // @return token
 // @return err
 //
-func (userService *userService) Login(username string, password string) (token *res.AccessToken, err error) {
+func (userService *userService) Login(username string, password string) (token *res.AccessTokenRes, err error) {
 	var entity system.User
 	if errors.Is(global.Db.Where("username = ?", username).Preload("Roles").First(&entity).Error, gorm.ErrRecordNotFound) {
 		return nil, errors.New("用户不存在!")
@@ -239,7 +239,7 @@ func (userService *userService) GetList(info *common.PageInfo) (list []system.Us
 //  @return *response.UserLogin
 //  @return error
 //
-func (userService *userService) tokenCreate(user *system.User) (*res.AccessToken, error) {
+func (userService *userService) tokenCreate(user *system.User) (*res.AccessTokenRes, error) {
 	_jwt := auth.NewJWT()
 	claims := request.CustomClaims{
 		Id:       user.Id,
@@ -259,7 +259,7 @@ func (userService *userService) tokenCreate(user *system.User) (*res.AccessToken
 		return nil, errors.Wrap(err, "获取token失败!")
 	}
 	if !global.Config.System.UseMultipoint {
-		entity := res.AccessToken{User: user, Token: token, ExpiresAt: claims.StandardClaims.ExpiresAt * 1000}
+		entity := res.AccessTokenRes{User: user, Token: token, ExpiresAt: claims.StandardClaims.ExpiresAt * 1000}
 		return &entity, nil
 	}
 
@@ -267,7 +267,7 @@ func (userService *userService) tokenCreate(user *system.User) (*res.AccessToken
 		if err = JwtBlacklist.SetRedisJWT(token, user.Username); err != nil {
 			return nil, errors.Wrap(err, "设置登录状态失败!")
 		}
-		entity := res.AccessToken{User: user, Token: token, ExpiresAt: claims.StandardClaims.ExpiresAt * 1000}
+		entity := res.AccessTokenRes{User: user, Token: token, ExpiresAt: claims.StandardClaims.ExpiresAt * 1000}
 		return &entity, nil
 	} else if _err != nil {
 		return nil, errors.Wrap(_err, "设置登录状态失败!")
@@ -278,7 +278,7 @@ func (userService *userService) tokenCreate(user *system.User) (*res.AccessToken
 		if err = JwtBlacklist.SetRedisJWT(token, user.Username); err != nil {
 			return nil, errors.Wrap(err, "设置登录状态失败!")
 		}
-		entity := res.AccessToken{User: user, Token: token, ExpiresAt: claims.StandardClaims.ExpiresAt * 1000}
+		entity := res.AccessTokenRes{User: user, Token: token, ExpiresAt: claims.StandardClaims.ExpiresAt * 1000}
 		return &entity, nil
 	}
 }

@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/library/global"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"

@@ -2,11 +2,10 @@ package manager
 
 import (
 	"context"
-	"github.com/flipped-aurora/gf-vue-admin/app/model/basic/res"
-	model "github.com/flipped-aurora/gf-vue-admin/app/model/system"
-	"github.com/flipped-aurora/gf-vue-admin/app/model/system/request"
-	"github.com/flipped-aurora/gf-vue-admin/app/service/system"
-	"github.com/flipped-aurora/gf-vue-admin/library/auth"
+	"github.com/fast-crud/fast-auth/app/controller/util"
+	"github.com/fast-crud/fast-auth/app/model/basic/res"
+	model "github.com/fast-crud/fast-auth/app/model/system"
+	"github.com/fast-crud/fast-auth/app/service/system"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/pkg/errors"
 )
@@ -25,7 +24,7 @@ type RegisterRes struct {
 }
 
 func (UserController) Add(ctx context.Context, req *RegisterReq) (*RegisterRes, error) {
-	var info = request.UserRegister{
+	var info = system.UserRegisterParams{
 		Avatar:   req.Avatar,
 		Username: req.Username,
 		Password: req.Password,
@@ -62,7 +61,7 @@ type UpdateReq struct {
 
 func (UserController) Update(ctx context.Context, req *UpdateReq) (*res.BlankRes, error) {
 	var request = g.RequestFromCtx(ctx)
-	var id = auth.Claims.GetUserInfo(request).Id
+	var id = util.Claims.GetUserInfo(request).Id
 	var info = system.UserUpdateParams{
 		Id:       id,
 		Avatar:   req.Avatar,

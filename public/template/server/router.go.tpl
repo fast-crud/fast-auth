@@ -1,9 +1,9 @@
 package example
 
 import (
-	"github.com/flipped-aurora/gf-vue-admin/app/api/example"
-	"github.com/flipped-aurora/gf-vue-admin/interfaces"
-	"github.com/flipped-aurora/gf-vue-admin/library/response"
+	"github.com/fast-crud/fast-auth/app/api/example"
+	"github.com/fast-crud/fast-auth/interfaces"
+	"github.com/fast-crud/fast-auth/library/response"
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 

@@ -14,4 +14,10 @@ logger:
   path: './logs/log'
   level: 'all'
   stdout: true
-  
+
+casdoor:
+  endpoint: http://casdoor.docmirror.cm:8000
+  clientId: 5df93cbab9bd641b3254
+  ClientSecret: e199788a17f34ccdacc5c69dd7d18b15bea3034b
+  Organization: handsfree
+  Application: fast-auth

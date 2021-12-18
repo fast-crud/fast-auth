@@ -1,9 +1,9 @@
 package boot
 
 import (
-	"github.com/flipped-aurora/gf-vue-admin/app/service/system"
-	boot "github.com/flipped-aurora/gf-vue-admin/boot/gorm"
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/app/service/system"
+	boot "github.com/fast-crud/fast-auth/boot/gorm"
+	"github.com/fast-crud/fast-auth/library/global"
 )
 
 func Initialize() {

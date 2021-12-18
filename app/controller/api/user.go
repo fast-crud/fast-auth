@@ -2,18 +2,18 @@ package api
 
 import (
 	"context"
-	"github.com/flipped-aurora/gf-vue-admin/app/model/basic/res"
-	model "github.com/flipped-aurora/gf-vue-admin/app/model/system"
-	"github.com/flipped-aurora/gf-vue-admin/app/model/system/request"
-	"github.com/flipped-aurora/gf-vue-admin/app/service/system"
-	"github.com/flipped-aurora/gf-vue-admin/library/auth"
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/app/controller/util"
+	"github.com/fast-crud/fast-auth/app/model/basic/res"
+	model "github.com/fast-crud/fast-auth/app/model/system"
+	"github.com/fast-crud/fast-auth/app/service/system"
+	"github.com/fast-crud/fast-auth/library/global"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/pkg/errors"
 )
 
 type UserController struct{}
 
+// RegisterReq -----------------------------------------------------
 type RegisterReq struct {
 	g.Meta   `path:"/register" method:"post"`
 	Avatar   string `json:"avatar"`
@@ -26,7 +26,7 @@ type RegisterRes struct {
 }
 
 func (UserController) Register(ctx context.Context, req *RegisterReq) (res *RegisterRes, err error) {
-	var info = request.UserRegister{
+	var info = system.UserRegisterParams{
 		Avatar:   req.Avatar,
 		Username: req.Username,
 		Password: req.Password,
@@ -39,8 +39,9 @@ func (UserController) Register(ctx context.Context, req *RegisterReq) (res *Regi
 	return &RegisterRes{data.Id}, nil
 }
 
+// LoginReq -----------------------------------------------------
 type LoginReq struct {
-	g.Meta    `path:"/login" method:"post"`
+	g.Meta    `path:"/login" method:"post" auth:"false"`
 	Captcha   string `json:"captcha" example:"验证码"`
 	Username  string `json:"username" example:"用户名"`
 	Password  string `json:"password" example:"密码"`
@@ -61,6 +62,7 @@ func (UserController) Login(ctx context.Context, req *LoginReq) (res *res.Access
 	return token, nil
 }
 
+// MeReq -----------------------------------------------------
 type MeReq struct {
 	g.Meta `path:"/me" method:"post"`
 }
@@ -70,7 +72,7 @@ type MeRes struct {
 
 func (UserController) Me(ctx context.Context, req *MeReq) (res *MeRes, err error) {
 	var request = g.RequestFromCtx(ctx)
-	var id = auth.Claims.GetUserInfo(request).Id
+	var id = util.Claims.GetUserInfo(request).Id
 	data, err := system.UserService.GetById(id)
 	if err != nil {
 		return nil, err
@@ -78,6 +80,7 @@ func (UserController) Me(ctx context.Context, req *MeReq) (res *MeRes, err error
 	return &MeRes{User: *data}, nil
 }
 
+// UpdateReq -----------------------------------------------------
 type UpdateReq struct {
 	g.Meta   `path:"/update" method:"post"`
 	Avatar   string `json:"avatar" example:"用户头像"`
@@ -87,17 +90,9 @@ type UpdateRes struct {
 	model.User
 }
 
-//
-// Update
-// @Description:
-// @receiver UserController
-// @param ctx
-// @param req
-// @return *response.Response
-//
 func (UserController) Update(ctx context.Context, req *UpdateReq) (res *UpdateRes, err error) {
 	var request = g.RequestFromCtx(ctx)
-	var id = auth.Claims.GetUserInfo(request).Id
+	var id = util.Claims.GetUserInfo(request).Id
 	var info = system.UserUpdateParams{
 		Id:       id,
 		Avatar:   req.Avatar,
@@ -111,6 +106,10 @@ func (UserController) Update(ctx context.Context, req *UpdateReq) (res *UpdateRe
 	return &UpdateRes{*data}, nil
 }
 
+//
+// ChangePasswordReq
+// @Description:
+//
 type ChangePasswordReq struct {
 	g.Meta      `path:"/changePassword" method:"post"`
 	Password    string `json:"password" example:"密码"`
@@ -130,7 +129,7 @@ type ChangePasswordRes struct {
 func (UserController) ChangePassword(ctx context.Context, req *ChangePasswordReq) (res *ChangePasswordRes, err error) {
 
 	var request = g.RequestFromCtx(ctx)
-	var user = auth.Claims.GetUserInfo(request)
+	var user = util.Claims.GetUserInfo(request)
 	var id = user.Id
 	var params = system.UserChangePasswordParams{
 		Id:          id,

@@ -1,10 +1,10 @@
 package example
 
 import (
-	"github.com/flipped-aurora/gf-vue-admin/app/model/example/request"
-	"github.com/flipped-aurora/gf-vue-admin/app/service/example"
-	"github.com/flipped-aurora/gf-vue-admin/library/common"
-	"github.com/flipped-aurora/gf-vue-admin/library/response"
+	"github.com/fast-crud/fast-auth/app/model/example/request"
+	"github.com/fast-crud/fast-auth/app/service/example"
+	"github.com/fast-crud/fast-auth/library/common"
+	"github.com/fast-crud/fast-auth/library/response"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 )

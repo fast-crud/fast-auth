@@ -3,8 +3,8 @@ package boot
 import (
 	"fmt"
 
-	"github.com/flipped-aurora/gf-vue-admin/boot/internal"
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/boot/internal"
+	"github.com/fast-crud/fast-auth/library/global"
 	"go.uber.org/zap"
 )
 

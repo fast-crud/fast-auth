@@ -3,7 +3,7 @@ package internal
 import (
 	"time"
 
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/library/global"
 	"go.uber.org/zap/zapcore"
 )
 

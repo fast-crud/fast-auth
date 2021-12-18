@@ -1,6 +1,6 @@
 package example
 
-import "github.com/flipped-aurora/gf-vue-admin/library/global"
+import "github.com/fast-crud/fast-auth/library/global"
 
 // {{.StructName}} 结构体
 type {{.StructName}} struct {

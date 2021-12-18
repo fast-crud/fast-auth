@@ -8,9 +8,8 @@ import (
 	"path/filepath"
 	"time"
 
-	boot "github.com/flipped-aurora/gf-vue-admin/boot/gorm"
-	"github.com/flipped-aurora/gf-vue-admin/library/constant"
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	boot "github.com/fast-crud/fast-auth/boot/gorm"
+	"github.com/fast-crud/fast-auth/library/global"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gmode"
@@ -25,25 +24,33 @@ type _viper struct {
 	path string
 }
 
+const (
+	ConfigEnv         = "GFVA_CONFIG"
+	ConfigDevelopFile = "config/config.develop.yaml"
+	ConfigTestingFile = "config/config.testing.yaml"
+	ConfigStagingFile = "config/config.staging.yaml"
+	ConfigProductFile = "config/config.product.yaml"
+)
+
 func (v *_viper) Initialize(path ...string) {
 	if len(path) == 0 {
 		flag.StringVar(&v.path, "c", "", "choose config file.")
 		flag.Parse()
 		if v.path == "" { // 优先级: 命令行 > 环境变量 > 默认值
-			if configEnv := os.Getenv(constant.ConfigEnv); configEnv == "" {
+			if configEnv := os.Getenv(ConfigEnv); configEnv == "" {
 				gmode.Set("unknown") // 设置gf mode
 				switch gmode.Mode() {
 				case gmode.DEVELOP:
-					v.path = constant.ConfigDevelopFile
+					v.path = ConfigDevelopFile
 					fmt.Println(`您现在的环境是 develop, 配置文件的路径为: `, v.path)
 				case gmode.TESTING:
-					v.path = constant.ConfigTestingFile
+					v.path = ConfigTestingFile
 					fmt.Println(`您现在的环境是 testing, 配置文件的路径为: `, v.path)
 				case gmode.STAGING:
-					v.path = constant.ConfigStagingFile
+					v.path = ConfigStagingFile
 					fmt.Println(`您现在的环境是 staging, 配置文件的路径为: `, v.path)
 				case gmode.PRODUCT:
-					v.path = constant.ConfigProductFile
+					v.path = ConfigProductFile
 					fmt.Println(`您现在的环境是 product, 配置文件的路径为: `, v.path)
 				default:
 					if p := boot.DbResolver.GetConfigPath(); p != "" {
@@ -52,7 +59,7 @@ func (v *_viper) Initialize(path ...string) {
 					}
 				}
 			} else {
-				v.path = constant.ConfigEnv
+				v.path = ConfigEnv
 				fmt.Println(`您正在使用GVA_CONFIG环境变量, 配置文件的路径为: `, v.path)
 			}
 		} else {

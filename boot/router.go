@@ -1,9 +1,9 @@
 package boot
 
 import (
-	"github.com/flipped-aurora/gf-vue-admin/app/controller/api"
-	"github.com/flipped-aurora/gf-vue-admin/app/controller/manager"
-	"github.com/flipped-aurora/gf-vue-admin/app/router/middleware"
+	"github.com/fast-crud/fast-auth/app/controller/api"
+	"github.com/fast-crud/fast-auth/app/controller/manager"
+	"github.com/fast-crud/fast-auth/library/middleware"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 )
@@ -14,6 +14,8 @@ type _router struct{}
 
 func (r *_router) Register() {
 	g.Server().Use(ghttp.MiddlewareHandlerResponse)
+	g.Server().Use(middleware.ErrorHandler)
+	g.Server().Use(middleware.JwtAuth)
 	g.Server().Use(middleware.Casbin)
 	g.Server().Group("/api/user", func(group *ghttp.RouterGroup) {
 		group.Bind(new(api.UserController))

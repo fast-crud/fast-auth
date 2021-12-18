@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flipped-aurora/gf-vue-admin/library/utils"
+	"github.com/fast-crud/fast-auth/library/utils"
 )
 
 type Local struct {

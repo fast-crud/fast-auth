@@ -1,14 +1,14 @@
 package system
 
 import (
-	"github.com/flipped-aurora/gf-vue-admin/app/model/basic/res"
+	auth2 "github.com/fast-crud/fast-auth/app/model/auth"
+	"github.com/fast-crud/fast-auth/app/model/basic/res"
+	"github.com/fast-crud/fast-auth/app/service/basic"
 	"time"
 
-	"github.com/flipped-aurora/gf-vue-admin/app/model/system"
-	"github.com/flipped-aurora/gf-vue-admin/app/model/system/request"
-	"github.com/flipped-aurora/gf-vue-admin/library/auth"
-	"github.com/flipped-aurora/gf-vue-admin/library/common"
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/app/model/system"
+	"github.com/fast-crud/fast-auth/library/common"
+	"github.com/fast-crud/fast-auth/library/global"
 	"github.com/go-redis/redis/v8"
 	"github.com/golang-jwt/jwt"
 	"github.com/pkg/errors"
@@ -19,18 +19,30 @@ var UserService = new(userService)
 
 type userService struct{}
 
+type UserRegisterParams struct {
+	Avatar   string
+	Username string
+	Password string
+	NickName string
+}
+
 // Register
 // @Description: 用户注册
 // @receiver userService
 // @param info
 // @return data
 // @return err
-func (userService *userService) Register(info *request.UserRegister) (data *system.User, err error) {
+func (userService *userService) Register(info *UserRegisterParams) (data *system.User, err error) {
 	var entity system.User
 	if !errors.Is(global.Db.Where("username = ?", info.Username).First(&entity).Error, gorm.ErrRecordNotFound) { // 判断用户名是否注册
 		return nil, errors.Wrap(err, "用户名已注册")
 	}
-	entity = info.Create()
+	entity = system.User{
+		Avatar:   info.Avatar,
+		Username: info.Username,
+		Password: info.Password,
+		NickName: info.NickName,
+	}
 	if err = entity.EncryptedPassword(); err != nil {
 		return nil, errors.Wrap(err, "密码加密失败!")
 	}
@@ -240,8 +252,8 @@ func (userService *userService) GetList(info *common.PageInfo) (list []system.Us
 //  @return error
 //
 func (userService *userService) tokenCreate(user *system.User) (*res.AccessTokenRes, error) {
-	_jwt := auth.NewJWT()
-	claims := request.CustomClaims{
+	_jwt := basic.NewJWT()
+	claims := auth2.JwtClaims{
 		Id:       user.Id,
 		NickName: user.NickName,
 		Username: user.Username,

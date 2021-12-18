@@ -1,8 +1,8 @@
 package request
 
 import (
-	"github.com/flipped-aurora/gf-vue-admin/app/model/example"
-	"github.com/flipped-aurora/gf-vue-admin/library/common"
+	"github.com/fast-crud/fast-auth/app/model/example"
+	"github.com/fast-crud/fast-auth/library/common"
     "gorm.io/gorm"
 )
 

@@ -1,6 +1,7 @@
 package oss
 
 import (
+	"github.com/fast-crud/fast-auth/library/interfaces"
 	"io"
 	"io/fs"
 	"mime/multipart"
@@ -8,8 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/flipped-aurora/gf-vue-admin/interfaces"
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/library/global"
 	"github.com/huaweicloud/huaweicloud-sdk-go-obs/obs"
 	"github.com/pkg/errors"
 )

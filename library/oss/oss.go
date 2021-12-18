@@ -1,8 +1,8 @@
 package oss
 
 import (
-	"github.com/flipped-aurora/gf-vue-admin/interfaces"
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/library/global"
+	"github.com/fast-crud/fast-auth/library/interfaces"
 )
 
 func Oss() interfaces.Oss {

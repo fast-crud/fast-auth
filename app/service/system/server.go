@@ -4,7 +4,6 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/flipped-aurora/gf-vue-admin/app/model/system/response"
 	"github.com/pkg/errors"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
@@ -22,10 +21,44 @@ var Server = new(_server)
 
 type _server struct{}
 
+type ServerRes struct {
+	Os   Os   `json:"os"`
+	Cpu  Cpu  `json:"cpu"`
+	Rrm  Rrm  `json:"ram"`
+	Disk Disk `json:"disk"`
+}
+
+type Os struct {
+	GOOS         string `json:"goos"`
+	NumCPU       int    `json:"numCpu"`
+	Compiler     string `json:"compiler"`
+	GoVersion    string `json:"goVersion"`
+	NumGoroutine int    `json:"numGoroutine"`
+}
+
+type Cpu struct {
+	Cpus  []float64 `json:"cpus"`
+	Cores int       `json:"cores"`
+}
+
+type Rrm struct {
+	UsedMB      int `json:"usedMb"`
+	TotalMB     int `json:"totalMb"`
+	UsedPercent int `json:"usedPercent"`
+}
+
+type Disk struct {
+	UsedMB      int `json:"usedMb"`
+	UsedGB      int `json:"usedGb"`
+	TotalMB     int `json:"totalMb"`
+	TotalGB     int `json:"totalGb"`
+	UsedPercent int `json:"usedPercent"`
+}
+
 // GetServerInfo 获取服务器信息
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *_server) GetServerInfo() (data *response.Server, err error) {
-	server := response.Server{Os: s.InitOs()}
+func (s *_server) GetServerInfo() (data *ServerRes, err error) {
+	server := ServerRes{Os: s.InitOs()}
 	if server.Cpu, err = s.InitCpu(); err != nil {
 		return nil, errors.Wrap(err, "获取CPU信息失败!")
 	}
@@ -41,8 +74,8 @@ func (s *_server) GetServerInfo() (data *response.Server, err error) {
 
 // InitOs 获取系统信息 组装数据为 response.Os
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *_server) InitOs() response.Os {
-	return response.Os{
+func (s *_server) InitOs() Os {
+	return Os{
 		GOOS:         runtime.GOOS,
 		NumCPU:       runtime.NumCPU(),
 		Compiler:     runtime.Compiler,
@@ -53,8 +86,8 @@ func (s *_server) InitOs() response.Os {
 
 // InitCpu 获取CPU信息 组装数据为 response.Cpu
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *_server) InitCpu() (response.Cpu, error) {
-	var _cpu response.Cpu
+func (s *_server) InitCpu() (Cpu, error) {
+	var _cpu Cpu
 	cores, err := cpu.Counts(false)
 	if err != nil {
 		return _cpu, err
@@ -67,10 +100,10 @@ func (s *_server) InitCpu() (response.Cpu, error) {
 	return _cpu, nil
 }
 
-// InitRAM 获取ARM信息 组装数据为 response.Rrm
+// InitRAM 获取ARM信息 组装数据为 Rrm
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *_server) InitRAM() (response.Rrm, error) {
-	var arm response.Rrm
+func (s *_server) InitRAM() (Rrm, error) {
+	var arm Rrm
 	virtualMemoryStat, err := mem.VirtualMemory()
 	if err != nil {
 		return arm, err
@@ -81,10 +114,10 @@ func (s *_server) InitRAM() (response.Rrm, error) {
 	return arm, nil
 }
 
-// InitDisk 获取硬盘信息 组装数据为 response.Disk
+// InitDisk 获取硬盘信息 组装数据为 Disk
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *_server) InitDisk() (response.Disk, error) {
-	var _disk response.Disk
+func (s *_server) InitDisk() (Disk, error) {
+	var _disk Disk
 	usageStat, err := disk.Usage("/")
 	if err != nil {
 		return _disk, err

@@ -1,6 +1,6 @@
 package system
 
-import "github.com/flipped-aurora/gf-vue-admin/library/global"
+import "github.com/fast-crud/fast-auth/library/global"
 
 type JwtBlacklist struct {
 	global.Model

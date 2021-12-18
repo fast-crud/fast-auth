@@ -3,13 +3,13 @@ package oss
 import (
 	"context"
 	"fmt"
+	"github.com/fast-crud/fast-auth/library/interfaces"
 	"mime/multipart"
 	"os"
 	"path/filepath"
 	"time"
 
-	"github.com/flipped-aurora/gf-vue-admin/interfaces"
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/library/global"
 	"github.com/pkg/errors"
 	"github.com/qiniu/api.v7/v7/auth/qbox"
 	"github.com/qiniu/api.v7/v7/storage"

@@ -1,20 +1,24 @@
 package system
 
 import (
-	"github.com/flipped-aurora/gf-vue-admin/app/model/system"
-	"github.com/flipped-aurora/gf-vue-admin/app/model/system/request"
-	"github.com/flipped-aurora/gf-vue-admin/library/common"
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/app/model/system"
+	"github.com/fast-crud/fast-auth/library/common"
+	"github.com/fast-crud/fast-auth/library/global"
 	"github.com/pkg/errors"
+	"gorm.io/gorm"
 )
 
 var OperationRecord = new(operationRecord)
 
 type operationRecord struct{}
 
+type OperationRecordCreateParams struct {
+	system.OperationRecord
+}
+
 // Create 创建记录
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *operationRecord) Create(info *request.OperationRecordCreate) error {
+func (s *operationRecord) Create(info *OperationRecordCreateParams) error {
 	return global.Db.Create(&info.OperationRecord).Error
 }
 
@@ -40,11 +44,32 @@ func (s *operationRecord) Deletes(ids *common.GetByIDs) error {
 	return global.Db.Delete(&[]system.OperationRecord{}, "id in (?)", ids.Ids).Error
 }
 
+type OperationRecordSearchParams struct {
+	Path   string `json:"path" example:"请求路径"`
+	Method string `json:"method" example:"请求方法"`
+	Status int    `json:"status" example:"7"`
+	common.PageInfo
+}
+
 // GetList 分页获取操作记录列表
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *operationRecord) GetList(info *request.OperationRecordSearch) (list []system.OperationRecord, total int64, err error) {
+func (s *operationRecord) GetList(info *OperationRecordSearchParams) (list []system.OperationRecord, total int64, err error) {
 	db := global.Db.Model(&system.OperationRecord{})
 	var entities []system.OperationRecord
-	err = db.Scopes(info.Search()).Count(&total).Preload("User").Find(&entities).Error
+
+	var search = func(db *gorm.DB) *gorm.DB { // 如果有条件搜索 下方会自动创建搜索语句
+		if info.Method != "" {
+			db = db.Where("method = ?", info.Method)
+		}
+		if info.Path != "" {
+			db = db.Where("path LIKE ?", "%"+info.Path+"%")
+		}
+		if info.Status != 0 {
+			db = db.Where("status = ?", info.Status)
+		}
+		return db.Order("id desc")
+	}
+
+	err = db.Scopes(search).Count(&total).Preload("User").Find(&entities).Error
 	return entities, total, err
 }

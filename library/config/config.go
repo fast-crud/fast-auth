@@ -8,6 +8,7 @@ type Config struct {
 	Email   Email   `mapstructure:"email" json:"email" yaml:"email"`       // email 邮箱
 	System  System  `mapstructure:"system" json:"system" yaml:"system"`    // system 系统
 	Casbin  Casbin  `mapstructure:"casbin" json:"casbin" yaml:"casbin"`    // casbin 权限
+	Casdoor Casdoor `mapstructure:"casdoor" json:"casdoor" yaml:"casdoor"` // casdoor 认证
 	Captcha Captcha `mapstructure:"captcha" json:"captcha" yaml:"captcha"` // captcha 验证码
 
 	Qiniu     Qiniu     `mapstructure:"qiniu" json:"qiniu" yaml:"qiniu"`                 // 七牛云对象存储

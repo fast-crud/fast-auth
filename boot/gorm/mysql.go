@@ -4,7 +4,7 @@
 package boot
 
 import (
-	"github.com/flipped-aurora/gf-vue-admin/interfaces"
+	"github.com/fast-crud/fast-auth/library/interfaces"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

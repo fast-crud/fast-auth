@@ -2,7 +2,7 @@ package api
 
 import (
 	"context"
-	"github.com/flipped-aurora/gf-vue-admin/app/service/system"
+	"github.com/fast-crud/fast-auth/app/service/system"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/pkg/errors"
 )

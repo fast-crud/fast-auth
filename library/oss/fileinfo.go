@@ -1,13 +1,12 @@
 package oss
 
 import (
+	"github.com/fast-crud/fast-auth/library/interfaces"
 	"io"
 	"io/fs"
 	"net/http"
 	"net/textproto"
 	"time"
-
-	"github.com/flipped-aurora/gf-vue-admin/interfaces"
 )
 
 type Option func(*FileInfo)

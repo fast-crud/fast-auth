@@ -1,13 +1,13 @@
 package oss
 
 import (
+	"github.com/fast-crud/fast-auth/library/interfaces"
 	"mime/multipart"
 	"os"
 	"path/filepath"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"github.com/flipped-aurora/gf-vue-admin/interfaces"
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/library/global"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )

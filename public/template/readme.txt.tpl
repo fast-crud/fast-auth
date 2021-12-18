@@ -2,6 +2,6 @@
 
 后端代码解压后同理，放到自己想要的 mvc对应路径 并且到 boot/router.go 分别注册公有组路由和私有组路由
 
-项目github:"https://github.com/flipped-aurora/gf-vue-admin"
+项目github:"https://github.com/fast-crud/fast-auth"
 
 希望大家给个star多多鼓励

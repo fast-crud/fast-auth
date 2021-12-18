@@ -3,7 +3,7 @@ package global
 import (
 	"time"
 
-	"github.com/flipped-aurora/gf-vue-admin/library/config"
+	"github.com/fast-crud/fast-auth/library/config"
 	"github.com/go-redis/redis/v8"
 	"github.com/songzhibin97/gkit/cache/local_cache"
 	"github.com/spf13/viper"

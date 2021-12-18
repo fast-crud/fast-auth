@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/library/global"
 	"github.com/mojocn/base64Captcha"
 	"go.uber.org/zap"
 )

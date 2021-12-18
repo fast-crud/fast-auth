@@ -1,6 +1,6 @@
 package main
 
-import "github.com/flipped-aurora/gf-vue-admin/boot"
+import "github.com/fast-crud/fast-auth/boot"
 
 // @title GF-VUE-ADMIN Swagger Docs
 // @version 1.0.1

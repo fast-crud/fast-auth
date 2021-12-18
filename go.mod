@@ -1,4 +1,4 @@
-module github.com/flipped-aurora/gf-vue-admin
+module github.com/fast-crud/fast-auth
 
 go 1.16
 
@@ -7,13 +7,13 @@ require (
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/casbin/casbin/v2 v2.37.0
 	github.com/casbin/gorm-adapter/v3 v3.0.2
+	github.com/casdoor/casdoor-go-sdk v0.1.6
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/go-redis/redis/v8 v8.11.3
 	github.com/gogf/gf/v2 v2.0.0-beta
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.21.8+incompatible
 	github.com/jonboulle/clockwork v0.2.2 // indirect
-	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.5 // indirect
 	github.com/minio/minio-go/v7 v7.0.5

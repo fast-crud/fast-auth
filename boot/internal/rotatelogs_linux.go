@@ -5,7 +5,7 @@ import (
 	"path"
 	"time"
 
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/library/global"
 	logs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap/zapcore"
 )

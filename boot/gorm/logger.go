@@ -3,7 +3,7 @@ package boot
 import (
 	"fmt"
 
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/library/global"
 	"go.uber.org/zap"
 	"gorm.io/gorm/logger"
 )

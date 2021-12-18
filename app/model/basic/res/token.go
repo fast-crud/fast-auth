@@ -1,6 +1,6 @@
 package res
 
-import "github.com/flipped-aurora/gf-vue-admin/app/model/system"
+import "github.com/fast-crud/fast-auth/app/model/system"
 
 type AccessTokenRes struct {
 	User      *system.User `json:"user"`

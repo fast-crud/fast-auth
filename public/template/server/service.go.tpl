@@ -1,10 +1,10 @@
 package example
 
 import (
-    "github.com/flipped-aurora/gf-vue-admin/app/model/example"
-    "github.com/flipped-aurora/gf-vue-admin/app/model/example/request"
-    "github.com/flipped-aurora/gf-vue-admin/library/common"
-    "github.com/flipped-aurora/gf-vue-admin/library/global"
+    "github.com/fast-crud/fast-auth/app/model/example"
+    "github.com/fast-crud/fast-auth/app/model/example/request"
+    "github.com/fast-crud/fast-auth/library/common"
+    "github.com/fast-crud/fast-auth/library/global"
 )
 
 var {{.StructName}} = new({{.Abbreviation}})

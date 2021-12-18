@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
 
-WORKDIR /go/src/github.com/flipped-aurora/gf-vue-admin
+WORKDIR /go/src/github.com/fast-crud/fast-auth
 COPY . .
 
 RUN go env -w GO111MODULE=on
@@ -15,9 +15,9 @@ LABEL MAINTAINER="SliverHorn@sliver_horn@qq.com"
 
 ENV GFVA_CONFIG = 'config/config.docker.yaml'
 
-WORKDIR /go/src/github.com/flipped-aurora/gf-vue-admin
+WORKDIR /go/src/github.com/fast-crud/fast-auth
 
-COPY --from=0 /go/src/github.com/flipped-aurora/gf-vue-admin ./
+COPY --from=0 /go/src/github.com/fast-crud/fast-auth ./
 
 EXPOSE 8888
 

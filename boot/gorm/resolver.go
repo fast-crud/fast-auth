@@ -1,7 +1,7 @@
 package boot
 
 import (
-	"github.com/flipped-aurora/gf-vue-admin/library/global"
+	"github.com/fast-crud/fast-auth/library/global"
 	"gorm.io/gorm"
 	"gorm.io/plugin/dbresolver"
 )

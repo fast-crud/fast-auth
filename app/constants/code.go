@@ -8,4 +8,10 @@ var (
 	CodeTokenExpired      = gcode.New(1003, "您的Token已过期，请重新登录", nil)
 	CodeTokenResolveError = gcode.New(1004, "Token解析失败", nil)
 	CodeTokenInvalid      = gcode.New(1005, "您的Token已失效", nil)
+	CodeUserNotExists     = gcode.New(1006, "用户不存在", nil)
+)
+
+var (
+	CodeNotBlank      = gcode.New(2001, "参数不能为空", nil)
+	CodeUserFindError = gcode.New(2002, "查询用户失败", nil)
 )

@@ -3,6 +3,7 @@ package boot
 import (
 	"github.com/fast-crud/fast-auth/app/controller/api"
 	"github.com/fast-crud/fast-auth/app/controller/manager"
+	"github.com/fast-crud/fast-auth/app/controller/rpc"
 	"github.com/fast-crud/fast-auth/library/middleware"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -17,6 +18,9 @@ func (r *_router) Register() {
 	g.Server().Use(middleware.ErrorHandler)
 	g.Server().Use(middleware.JwtAuth)
 	g.Server().Use(middleware.Casbin)
+	g.Server().Group("/api/auth", func(group *ghttp.RouterGroup) {
+		group.Bind(new(api.AuthController))
+	})
 	g.Server().Group("/api/user", func(group *ghttp.RouterGroup) {
 		group.Bind(new(api.UserController))
 	})
@@ -26,6 +30,9 @@ func (r *_router) Register() {
 
 	g.Server().Group("/manager/user", func(group *ghttp.RouterGroup) {
 		group.Bind(new(manager.UserController))
+	})
+	g.Server().Group("/rpc/user", func(group *ghttp.RouterGroup) {
+		group.Bind(new(rpc.UserController))
 	})
 }
 

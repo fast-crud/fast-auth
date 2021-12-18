@@ -16,9 +16,9 @@ func ErrorHandler(r *ghttp.Request) {
 		return
 	}
 
-	var err1 = r.GetCtxVar("error")
+	var err1 = r.GetCtxVar("error").Val()
 	if err1 != nil {
-		var err = err1.Val().(error)
+		var err = err1.(error)
 		code := gerror.Code(err)
 		if code == gcode.CodeNil {
 			code = gcode.CodeInternalError

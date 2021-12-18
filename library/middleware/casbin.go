@@ -11,6 +11,10 @@ import (
 // Casbin Casbin拦截器
 func Casbin(r *ghttp.Request) {
 	authClaims := r.GetCtxVar(constants.CtxAuth)
+	if authClaims.Val() == nil {
+		r.Middleware.Next()
+		return
+	}
 	var loginUser auth.JwtClaims
 	if err := authClaims.Struct(&loginUser); err != nil {
 		err := gerror.NewCode(constants.CodeNoPermission)
@@ -18,6 +22,10 @@ func Casbin(r *ghttp.Request) {
 		return
 	}
 	var permission = GetHandlerPermission(r)
+	if permission == "false" {
+		r.Middleware.Next()
+		return
+	}
 	roleIds := loginUser.RoleIds
 	e := system.Casbin.Casbin()
 	var ok = false

@@ -15,6 +15,7 @@ func (s *_server) Initialize() {
 	//address := g.Cfg().GetString("server.address")
 	server.SetIndexFolder(true)
 	server.AddStaticPath("/form-generator", "public/page")
+	InitCasdoor()
 	Routers.Register()
 	server.SetPort()
 	//server.Plugin(&swagger.Swagger{})

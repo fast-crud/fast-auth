@@ -1,9 +1,11 @@
 package system
 
 import (
+	"github.com/fast-crud/fast-auth/app/constants"
 	auth2 "github.com/fast-crud/fast-auth/app/model/auth"
 	"github.com/fast-crud/fast-auth/app/model/basic/res"
 	"github.com/fast-crud/fast-auth/app/service/basic"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"time"
 
 	"github.com/fast-crud/fast-auth/app/model/system"
@@ -63,7 +65,7 @@ func (userService *userService) Register(info *UserRegisterParams) (data *system
 func (userService *userService) Login(username string, password string) (token *res.AccessTokenRes, err error) {
 	var entity system.User
 	if errors.Is(global.Db.Where("username = ?", username).Preload("Roles").First(&entity).Error, gorm.ErrRecordNotFound) {
-		return nil, errors.New("用户不存在!")
+		return nil, gerror.NewCode(constants.CodeUserNotExists)
 	}
 	if !entity.CompareHashAndPassword(password) {
 		return nil, errors.New("密码错误!")
@@ -81,7 +83,7 @@ func (userService *userService) Login(username string, password string) (token *
 //
 func (userService *userService) GetById(Id uint) (data *system.User, err error) {
 	if Id == 0 {
-		return nil, errors.New("id不能为空")
+		return nil, gerror.NewCode(constants.CodeNotBlank)
 	}
 	var entity system.User
 	var search = func(db *gorm.DB) *gorm.DB {
@@ -91,14 +93,14 @@ func (userService *userService) GetById(Id uint) (data *system.User, err error) 
 		return db
 	}
 	if err = global.Db.Scopes(search).Preload("Roles").First(&entity).Error; err != nil {
-		return nil, errors.Wrap(err, "用户查询失败!")
+		return nil, gerror.NewCode(constants.CodeUserFindError)
 	}
 	return &entity, nil
 }
 
 type UserFindParams struct {
 	Id       uint   `json:"id" example:"7"`
-	username string `json:"username" example:"7"`
+	Username string `json:"username" example:"7"`
 }
 
 //
@@ -112,15 +114,15 @@ type UserFindParams struct {
 func (userService *userService) Find(userFindParams *UserFindParams) (data *system.User, err error) {
 	var entity system.User
 
-	if userFindParams.username == "" && userFindParams.Id == 0 {
-		return nil, errors.New("查询条件不能为空")
+	if userFindParams.Username == "" && userFindParams.Id == 0 {
+		return nil, gerror.NewCode(constants.CodeNotBlank)
 	}
 	var search = func(db *gorm.DB) *gorm.DB {
 		if userFindParams.Id != 0 {
 			db = db.Where("id = ?", userFindParams.Id)
 		}
-		if userFindParams.username != "" {
-			db = db.Where("username = ?", userFindParams.username)
+		if userFindParams.Username != "" {
+			db = db.Where("username = ?", userFindParams.Username)
 		}
 		return db
 	}

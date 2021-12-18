@@ -5,7 +5,7 @@ import (
 	"github.com/fast-crud/fast-auth/library/global"
 )
 
-func init() {
+func InitCasdoor() {
 	var Endpoint = global.Config.Casdoor.Endpoint
 	var ClientId = global.Config.Casdoor.ClientId
 	var ClientSecret = global.Config.Casdoor.ClientSecret

@@ -41,7 +41,7 @@ func (UserController) Register(ctx context.Context, req *RegisterReq) (res *Regi
 
 // LoginReq -----------------------------------------------------
 type LoginReq struct {
-	g.Meta    `path:"/login" method:"post" auth:"false"`
+	g.Meta    `path:"/login" method:"post" auth:"false" per:"false"`
 	Captcha   string `json:"captcha" example:"验证码"`
 	Username  string `json:"username" example:"用户名"`
 	Password  string `json:"password" example:"密码"`

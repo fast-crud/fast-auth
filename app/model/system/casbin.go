@@ -20,5 +20,5 @@ func (c *Casbin) BeforeCreate(tx *gorm.DB) error {
 }
 
 func (c *Casbin) TableName() string {
-	return "a_casbin_rule"
+	return "casbin_rule"
 }

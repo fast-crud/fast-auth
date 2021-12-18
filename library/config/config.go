@@ -17,6 +17,4 @@ type Config struct {
 	Aliyun    Aliyun    `mapstructure:"aliyun" json:"aliyun" yaml:"aliyun"`              // 阿里云对象存储
 	Tencent   Tencent   `mapstructure:"tencent" json:"tencent" yaml:"tencent"`           // 腾讯对象存储
 	HuaWeiObs HuaWeiObs `mapstructure:"hua-wei-obs" json:"huaWeiObs" yaml:"hua-wei-obs"` // 华为云对象存储
-
-	AutoCode AutoCode `mapstructure:"auto-code" json:"autoCode" yaml:"auto-code"` // 代码生成器
 }

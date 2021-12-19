@@ -61,7 +61,7 @@ type UpdateReq struct {
 
 func (UserController) Update(ctx context.Context, req *UpdateReq) (*res.BlankRes, error) {
 	var request = g.RequestFromCtx(ctx)
-	var id = util.Claims.GetUserInfo(request).Id
+	var id = util.Auth.GetUserInfo(request).Id
 	var info = system.UserUpdateParams{
 		Id:       id,
 		Avatar:   req.Avatar,

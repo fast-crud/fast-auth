@@ -2,50 +2,60 @@ package api
 
 import (
 	"context"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/fast-crud/fast-auth/app/model/basic/res"
+	"github.com/fast-crud/fast-auth/app/service/system"
+	"github.com/fast-crud/fast-auth/library/global"
 	"github.com/gogf/gf/v2/frame/g"
-	"time"
+	"github.com/pkg/errors"
 )
 
 type AuthController struct{}
 
-type CallbackReq struct {
-	g.Meta `path:"/callback" method:"get" auth:"false"`
+// RegisterReq -----------------------------------------------------
+type RegisterReq struct {
+	g.Meta   `path:"/register" method:"post"`
+	Avatar   string `json:"avatar"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	NickName string `json:"nickName"`
 }
-type CallbackRes struct {
-	Id          string    `json:"id"`
-	AccessToken string    `json:"accessToken"`
-	ExpiresAt   time.Time `json:"expires"`
+type RegisterRes struct {
+	Id uint
 }
 
-func (AuthController *AuthController) callback(ctx context.Context, req *CallbackReq) (*CallbackRes, error) {
-	var r = g.RequestFromCtx(ctx)
-	var code = r.GetQuery("code").String()
-	var state = r.GetQuery("state").String()
-	token, err := auth.GetOAuthToken(code, state)
-	if err != nil {
-		panic(err)
+func (AuthController) Register(ctx context.Context, req *RegisterReq) (res *RegisterRes, err error) {
+	var info = system.UserRegisterParams{
+		Avatar:   req.Avatar,
+		Username: req.Username,
+		Password: req.Password,
+		NickName: req.NickName,
 	}
-
-	claims, err := auth.ParseJwtToken(token.AccessToken)
+	data, err := system.UserService.Register(&info)
 	if err != nil {
-		panic(err)
+		return nil, errors.Wrap(err, "注册失败")
 	}
-
-	claims.AccessToken = token.AccessToken
-
-	return &CallbackRes{claims.User.Id, claims.AccessToken, claims.RegisteredClaims.ExpiresAt.Time}, nil
+	return &RegisterRes{data.Id}, nil
 }
 
-type GetLoginUrlReq struct {
-	g.Meta `path:"/getLoginUrl" method:"get" auth:"false"`
-}
-type GetLoginUrlRes struct {
-	Url string
+// LoginReq -----------------------------------------------------
+type LoginReq struct {
+	g.Meta    `path:"/login" method:"post" auth:"false" per:"false"`
+	Captcha   string `json:"captcha" example:"验证码"`
+	Username  string `json:"username" example:"用户名"`
+	Password  string `json:"password" example:"密码"`
+	CaptchaId string `json:"captchaId" example:"验证码id"`
 }
 
-func (AuthController *AuthController) GetLoginUrl(ctx context.Context, req *GetLoginUrlReq) (*GetLoginUrlRes, error) {
-	var url = auth.GetSigninUrl("http://localhost:8199/api/auth/callback")
+func (AuthController) Login(ctx context.Context, req *LoginReq) (res *res.AccessTokenRes, err error) {
 
-	return &GetLoginUrlRes{url}, nil
+	if global.Config.Captcha.Verification {
+		if !system.Store.Verify(req.CaptchaId, req.Captcha, true) {
+			return nil, errors.New("验证码错误")
+		}
+	}
+	token, err := system.UserService.Login(req.Username, req.Password)
+	if err != nil {
+		return nil, err
+	}
+	return token, nil
 }

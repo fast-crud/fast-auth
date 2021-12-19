@@ -5,14 +5,23 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/util/gmeta"
 	"reflect"
+	"strings"
 	"unsafe"
 )
 
 func GetHandlerAnnotation(r *ghttp.Request, annotationName string) string {
 	var handles = reflect.ValueOf(r).Elem().FieldByName("handlers")
 	var length = handles.Len()
+	if length <= 0 {
+		return ""
+	}
 	var lastHandler = handles.Index(length - 1)
 	var Handler = lastHandler.Elem().FieldByName("Handler")
+	var HandlerName = Handler.Elem().FieldByName("Name")
+	var HandlerNameStr = reflect.NewAt(HandlerName.Type(), unsafe.Pointer(HandlerName.UnsafeAddr())).Elem()
+	if strings.IndexAny(HandlerNameStr.String(), "controller") < 0 {
+		return ""
+	}
 	var Info = Handler.Elem().FieldByName("Info")
 	var Type = Info.FieldByName("Type")
 	//获取私有属性

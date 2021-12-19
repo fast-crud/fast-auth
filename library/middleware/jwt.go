@@ -9,6 +9,7 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	"go.uber.org/zap"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -22,12 +23,13 @@ func JwtAuth(r *ghttp.Request) {
 		return
 	}
 	// 我们这里jwt鉴权取头部信息 x-token 登录时回返回token信息 这里前端需要把token存储到cookie或者本地localStorage中 不过需要跟后端协商过期时间 可以约定刷新令牌或者重新登录
-	token := r.Request.Header.Get("x-token")
+	token := r.Request.Header.Get(constants.HeaderAuth)
 	if token == "" {
 		err := gerror.NewCode(constants.CodeNoAuth, "还未登录")
 		r.SetCtxVar("error", err)
 		return
 	}
+	token = strings.Replace(token, "Bearer ", "", 1)
 	if system.JwtBlacklist.IsBlacklist(token) {
 		err := gerror.NewCode(constants.CodeTokenInvalid, "令牌失效")
 		r.SetCtxVar("error", err)

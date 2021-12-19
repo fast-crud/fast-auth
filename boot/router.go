@@ -14,26 +14,34 @@ var Routers = new(_router)
 type _router struct{}
 
 func (r *_router) Register() {
-	g.Server().Use(ghttp.MiddlewareHandlerResponse)
 	g.Server().Use(middleware.ErrorHandler)
-	g.Server().Use(middleware.JwtAuth)
-	g.Server().Use(middleware.Casbin)
-	g.Server().Group("/api/auth", func(group *ghttp.RouterGroup) {
-		group.Bind(new(api.AuthController))
-	})
-	g.Server().Group("/api/user", func(group *ghttp.RouterGroup) {
-		group.Bind(new(api.UserController))
-	})
-	g.Server().Group("/api/captcha", func(group *ghttp.RouterGroup) {
-		group.Bind(new(api.CaptchaController))
+
+	//注册 api 和 manager
+	g.Server().Group("", func(group *ghttp.RouterGroup) {
+		group.Middleware(middleware.JwtAuth)
+		group.Middleware(middleware.Casbin)
+
+		group.Group("/api/auth", func(group *ghttp.RouterGroup) {
+			group.Bind(new(api.AuthController))
+		})
+		group.Group("/api/user", func(group *ghttp.RouterGroup) {
+			group.Bind(new(api.UserController))
+		})
+		group.Group("/api/captcha", func(group *ghttp.RouterGroup) {
+			group.Bind(new(api.CaptchaController))
+		})
+		group.Group("/manager/user", func(group *ghttp.RouterGroup) {
+			group.Bind(new(manager.UserController))
+		})
 	})
 
-	g.Server().Group("/manager/user", func(group *ghttp.RouterGroup) {
-		group.Bind(new(manager.UserController))
+	//注册 rpc
+	g.Server().Group("", func(group *ghttp.RouterGroup) {
+		group.Group("/rpc/user", func(group *ghttp.RouterGroup) {
+			group.Bind(new(rpc.UserController))
+		})
 	})
-	g.Server().Group("/rpc/user", func(group *ghttp.RouterGroup) {
-		group.Bind(new(rpc.UserController))
-	})
+
 }
 
 //// PublicRouter 公开路由组初始化

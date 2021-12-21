@@ -8,7 +8,9 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-type UserController struct{}
+type UserController struct {
+	g.Meta `path:"/user"`
+}
 
 // MeReq -----------------------------------------------------
 type MeReq struct {
@@ -20,7 +22,7 @@ type MeRes struct {
 
 func (UserController) Me(ctx context.Context, req *MeReq) (res *MeRes, err error) {
 	var request = g.RequestFromCtx(ctx)
-	var id = util.Auth.GetUserInfo(request).Id
+	var id = util.Auth.GetAuthInfo(request).Id
 	data, err := system.UserService.GetById(id)
 	if err != nil {
 		return nil, err
@@ -40,7 +42,7 @@ type UpdateRes struct {
 
 func (UserController) Update(ctx context.Context, req *UpdateReq) (res *UpdateRes, err error) {
 	var request = g.RequestFromCtx(ctx)
-	var id = util.Auth.GetUserInfo(request).Id
+	var id = util.Auth.GetAuthInfo(request).Id
 	var info = system.UserUpdateParams{
 		Id:       id,
 		Avatar:   req.Avatar,
@@ -77,7 +79,7 @@ type ChangePasswordRes struct {
 func (UserController) ChangePassword(ctx context.Context, req *ChangePasswordReq) (res *ChangePasswordRes, err error) {
 
 	var request = g.RequestFromCtx(ctx)
-	var user = util.Auth.GetUserInfo(request)
+	var user = util.Auth.GetAuthInfo(request)
 	var id = user.Id
 	var params = system.UserChangePasswordParams{
 		Id:          id,

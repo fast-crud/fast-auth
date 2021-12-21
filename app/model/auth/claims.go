@@ -2,10 +2,12 @@ package auth
 
 import "github.com/golang-jwt/jwt"
 
-type JwtClaims struct {
+type Claims struct {
 	Id         uint
 	Username   string
 	RoleIds    []uint
 	BufferTime int64
+	Type       string //认证类型：basic,jwt
+	From       string
 	jwt.StandardClaims
 }

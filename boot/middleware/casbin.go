@@ -15,13 +15,13 @@ func Casbin(r *ghttp.Request) {
 		r.Middleware.Next()
 		return
 	}
-	var loginUser auth.JwtClaims
+	var loginUser auth.Claims
 	if err := authClaims.Struct(&loginUser); err != nil {
 		err := gerror.NewCode(constants.CodeNoPermission)
 		r.SetCtxVar("error", err)
 		return
 	}
-	var permission = GetHandlerPermission(r)
+	var permission = GetRequestAnnotationPermission(r)
 	if permission == "false" {
 		r.Middleware.Next()
 		return

@@ -14,6 +14,8 @@ var (
 )
 
 var (
-	CodeParamCantBlank = gcode.New(2001, "参数不能为空", nil)
-	CodeUserFindError  = gcode.New(2002, "查询用户失败", nil)
+	CodeParamCantBlank  = gcode.New(2001, "参数不能为空", nil)
+	CodeUserFindError   = gcode.New(2002, "查询用户失败", nil)
+	CodeRecordNotExists = gcode.New(2003, "记录不存在", nil)
+	CodeAppNotExists    = gcode.New(2004, "应用不存在", nil)
 )

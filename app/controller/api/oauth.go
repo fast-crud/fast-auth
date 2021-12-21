@@ -9,7 +9,9 @@ import (
 	"time"
 )
 
-type OauthController struct{}
+type OauthController struct {
+	g.Meta `path:"/oauth"`
+}
 
 type CallbackReq struct {
 	g.Meta `path:"/callback" method:"get" auth:"false"`

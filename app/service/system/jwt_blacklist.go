@@ -4,10 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/fast-crud/fast-auth/app/model/system"
 	"github.com/fast-crud/fast-auth/library/global"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
 var JwtBlacklist = new(jwtBlacklist)
@@ -16,14 +13,14 @@ type jwtBlacklist struct{}
 
 // JwtToBlacklist 拉黑jwt
 // Author: [SliverHorn](https://github.com/SliverHorn)
-func (s *jwtBlacklist) JwtToBlacklist(jwt string) error {
-	entity := system.JwtBlacklist{Jwt: jwt}
-	if err := global.Db.Create(&entity).Error; err != nil {
-		return errors.Wrap(err, "拉黑jwt失败!")
-	}
-	global.JwtCache.SetDefault(jwt, struct{}{})
-	return nil
-}
+//func (s *jwtBlacklist) JwtToBlacklist(jwt string) error {
+//	entity := system.JwtBlacklist{Jwt: jwt}
+//	if err := global.Db.Create(&entity).Error; err != nil {
+//		return errors.Wrap(err, "拉黑jwt失败!")
+//	}
+//	global.JwtCache.SetDefault(jwt, struct{}{})
+//	return nil
+//}
 
 // IsBlacklist 判断JWT是否在jwt黑名单
 // Author: [SliverHorn](https://github.com/SliverHorn)
@@ -60,13 +57,13 @@ func (s *jwtBlacklist) ValidatorRedisToken(userUUID string, oldToken string) boo
 
 // LoadJwt 加载jwt黑名单到 global.JwtCache 中
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *jwtBlacklist) LoadJwt() {
-	var data []string
-	err := global.Db.Model(&system.JwtBlacklist{}).Select("jwt").Find(&data).Error
-	if err != nil {
-		zap.L().Error("加载失败!", zap.Error(err))
-	}
-	for i := range data { // 从db加载jwt数据
-		global.JwtCache.SetDefault(data[i], struct{}{})
-	}
-}
+//func (s *jwtBlacklist) LoadJwt() {
+//	var data []string
+//	err := global.Db.Model(&system.JwtBlacklist{}).Select("jwt").Find(&data).Error
+//	if err != nil {
+//		zap.L().Error("加载失败!", zap.Error(err))
+//	}
+//	for i := range data { // 从db加载jwt数据
+//		global.JwtCache.SetDefault(data[i], struct{}{})
+//	}
+//}

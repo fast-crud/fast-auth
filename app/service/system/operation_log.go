@@ -8,24 +8,24 @@ import (
 	"gorm.io/gorm"
 )
 
-var OperationRecord = new(operationRecord)
+var OperationLog = new(operationLog)
 
-type operationRecord struct{}
+type operationLog struct{}
 
-type OperationRecordCreateParams struct {
-	system.OperationRecord
+type OperationLogCreateParams struct {
+	system.OperationLog
 }
 
 // Create 创建记录
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *operationRecord) Create(info *OperationRecordCreateParams) error {
-	return global.Db.Create(&info.OperationRecord).Error
+func (s *operationLog) Create(info *OperationLogCreateParams) error {
+	return global.Db.Create(&info.OperationLog).Error
 }
 
 // First 根据id获取单条操作记录
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *operationRecord) First(info *common.GetByID) (data *system.OperationRecord, err error) {
-	var entity system.OperationRecord
+func (s *operationLog) First(info *common.GetByID) (data *system.OperationLog, err error) {
+	var entity system.OperationLog
 	if err = global.Db.Where("id = ?", info.Id).First(&entity).Error; err != nil {
 		return nil, errors.Wrap(err, "查找记录失败")
 	}
@@ -34,14 +34,14 @@ func (s *operationRecord) First(info *common.GetByID) (data *system.OperationRec
 
 // Delete 删除操作记录
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *operationRecord) Delete(info *common.GetByID) error {
-	return global.Db.Delete(&system.OperationRecord{}, info.Id).Error
+func (s *operationLog) Delete(info *common.GetByID) error {
+	return global.Db.Delete(&system.OperationLog{}, info.Id).Error
 }
 
 // Deletes 批量删除记录
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *operationRecord) Deletes(ids *common.GetByIDs) error {
-	return global.Db.Delete(&[]system.OperationRecord{}, "id in (?)", ids.Ids).Error
+func (s *operationLog) Deletes(ids *common.GetByIDs) error {
+	return global.Db.Delete(&[]system.OperationLog{}, "id in (?)", ids.Ids).Error
 }
 
 type OperationRecordSearchParams struct {
@@ -53,9 +53,9 @@ type OperationRecordSearchParams struct {
 
 // GetList 分页获取操作记录列表
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (s *operationRecord) GetList(info *OperationRecordSearchParams) (list []system.OperationRecord, total int64, err error) {
-	db := global.Db.Model(&system.OperationRecord{})
-	var entities []system.OperationRecord
+func (s *operationLog) GetList(info *OperationRecordSearchParams) (list []system.OperationLog, total int64, err error) {
+	db := global.Db.Model(&system.OperationLog{})
+	var entities []system.OperationLog
 
 	var search = func(db *gorm.DB) *gorm.DB { // 如果有条件搜索 下方会自动创建搜索语句
 		if info.Method != "" {

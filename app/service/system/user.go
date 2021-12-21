@@ -11,7 +11,6 @@ import (
 	"github.com/fast-crud/fast-auth/app/model/system"
 	"github.com/fast-crud/fast-auth/library/common"
 	"github.com/fast-crud/fast-auth/library/global"
-	"github.com/go-redis/redis/v8"
 	"github.com/golang-jwt/jwt"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
@@ -199,44 +198,11 @@ func (userService *userService) ResetPassword(Id uint, NewPassword string) error
 	return global.Db.Model(&entity).Where("id = ?", Id).Update("password", entity.Password).Error
 }
 
-//// SetAuthority 设置用户的活跃角色
-//// Author: [SliverHorn](https://github.com/SliverHorn)
-//func (s *userService) SetAuthority(info *request.UserSetAuthority) error {
-//	err := global.Db.Where("user_id = ? AND authority_id = ?", info.Id, info.AuthorityId).First(&system.UseAuthority{}).Error
-//	if errors.Is(err, gorm.ErrRecordNotFound) {
-//		return errors.New("该用户无此角色!")
-//	}
-//	if err = global.Db.Model(&system.User{}).Where("uuid = ?", info.Uuid).Update("authority_id", info.AuthorityId).Error; err != nil {
-//		return errors.Wrap(err, "更新用户角色失败!")
-//	}
-//	return nil
-//}
-
-// SetUserAuthorities 设置用户可切换的角色
-// Author [SliverHorn](https://github.com/SliverHorn)
-//func (s *userService) SetUserAuthorities(info *request.UserSetAuthorities) error {
-//	return global.Db.Transaction(func(tx *gorm.DB) error {
-//		if err := tx.Delete(&[]system.UseAuthority{}, "user_id = ?", info.Id).Error; err != nil {
-//			return errors.Wrap(err, "用户可切换的旧角色删除失败!")
-//		}
-//		length := len(info.AuthorityIds)
-//		entities := make([]system.UseAuthority, 0, length)
-//		for i := 0; i < length; i++ {
-//			entities = append(entities, system.UseAuthority{UserId: info.Id, AuthorityId: info.AuthorityIds[i]})
-//		}
-//		if err := tx.Create(&entities).Error; err != nil {
-//			return errors.Wrap(err, "设置用户多角色失败!")
-//		}
-//		return nil
-//	})
-//}
-
 func (userService *userService) Delete(Id uint) error {
 	return global.Db.Delete(&system.User{}, Id).Error
 }
 
 // GetList 获取用户列表
-// Author: [SliverHorn](https://github.com/SliverHorn)
 func (userService *userService) GetList(info *common.PageInfo) (list []system.User, total int64, err error) {
 	entities := make([]system.User, 0, info.PageSize)
 	db := global.Db.Model(&system.User{})
@@ -259,7 +225,7 @@ func (userService *userService) tokenCreate(user *system.User) (*res.AccessToken
 	for i := 0; i < len(user.Roles); i++ {
 		roleIds[i] = user.Roles[i].Id
 	}
-	claims := auth2.JwtClaims{
+	claims := auth2.Claims{
 		Id:         user.Id,
 		Username:   user.Username,
 		RoleIds:    roleIds,
@@ -274,27 +240,6 @@ func (userService *userService) tokenCreate(user *system.User) (*res.AccessToken
 	if err != nil {
 		return nil, errors.Wrap(err, "获取token失败!")
 	}
-	if !global.Config.System.UseMultipoint {
-		entity := res.AccessTokenRes{User: user, Token: token, ExpiresAt: claims.StandardClaims.ExpiresAt * 1000}
-		return &entity, nil
-	}
-
-	if jwtStr, _err := JwtBlacklist.GetRedisJWT(user.Username); _err == redis.Nil {
-		if err = JwtBlacklist.SetRedisJWT(token, user.Username); err != nil {
-			return nil, errors.Wrap(err, "设置登录状态失败!")
-		}
-		entity := res.AccessTokenRes{User: user, Token: token, ExpiresAt: claims.StandardClaims.ExpiresAt * 1000}
-		return &entity, nil
-	} else if _err != nil {
-		return nil, errors.Wrap(_err, "设置登录状态失败!")
-	} else {
-		if !JwtBlacklist.IsBlacklist(jwtStr) {
-			return nil, errors.Wrap(_err, "jwt作废失败!")
-		}
-		if err = JwtBlacklist.SetRedisJWT(token, user.Username); err != nil {
-			return nil, errors.Wrap(err, "设置登录状态失败!")
-		}
-		entity := res.AccessTokenRes{User: user, Token: token, ExpiresAt: claims.StandardClaims.ExpiresAt * 1000}
-		return &entity, nil
-	}
+	entity := res.AccessTokenRes{User: user, Token: token, ExpiresAt: claims.StandardClaims.ExpiresAt * 1000}
+	return &entity, nil
 }

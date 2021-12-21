@@ -2,44 +2,50 @@ package boot
 
 import (
 	"github.com/fast-crud/fast-auth/app/controller/api"
-	"github.com/fast-crud/fast-auth/app/controller/manager"
-	"github.com/fast-crud/fast-auth/app/controller/rpc"
-	"github.com/fast-crud/fast-auth/library/middleware"
+	"github.com/fast-crud/fast-auth/boot/middleware"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/util/gmeta"
 )
 
 var Routers = new(_router)
 
 type _router struct{}
 
+func (r *_router) bind(group *ghttp.RouterGroup, basePath string, controller interface{}, middlewares ...ghttp.HandlerFunc) {
+	var metaPath = gmeta.Get(controller, "groupPath")
+	var groupPath = basePath
+	if metaPath != nil {
+		groupPath += metaPath.String()
+	}
+	group.Group(groupPath, func(group *ghttp.RouterGroup) {
+		if middlewares != nil {
+			for i := range middlewares {
+				group.Middleware(middlewares[i])
+			}
+		}
+
+		group.Bind(controller)
+	})
+}
 func (r *_router) Register() {
-	g.Server().Use(middleware.ErrorHandler)
+	g.Server().Use(middleware.ResponseHandler)
 
 	//注册 api 和 manager
 	g.Server().Group("", func(group *ghttp.RouterGroup) {
-		group.Middleware(middleware.JwtAuth)
+		group.Middleware(middleware.Authentication)
 		group.Middleware(middleware.Casbin)
 
-		group.Group("/api/auth", func(group *ghttp.RouterGroup) {
-			group.Bind(new(api.AuthController))
-		})
-		group.Group("/api/user", func(group *ghttp.RouterGroup) {
-			group.Bind(new(api.UserController))
-		})
-		group.Group("/api/captcha", func(group *ghttp.RouterGroup) {
-			group.Bind(new(api.CaptchaController))
-		})
-		group.Group("/manager/user", func(group *ghttp.RouterGroup) {
-			group.Bind(new(manager.UserController))
-		})
+		r.bind(group, "/api", new(api.AuthController))
+		r.bind(group, "/api", new(api.UserController))
+		r.bind(group, "/api", new(api.CaptchaController))
+		r.bind(group, "/manager", new(api.AuthController), middleware.OperationLog)
 	})
 
 	//注册 rpc
 	g.Server().Group("", func(group *ghttp.RouterGroup) {
-		group.Group("/rpc/user", func(group *ghttp.RouterGroup) {
-			group.Bind(new(rpc.UserController))
-		})
+		group.Middleware(middleware.BasicAuth)
+		r.bind(group, "/rpc", new(api.UserController))
 	})
 
 }
@@ -63,7 +69,7 @@ func (r *_router) Register() {
 //// Author [SliverHorn](https://github.com/SliverHorn)
 //func (r *_router) PrivateRouter() *_router {
 //	private := g.Server().Group("")
-//	private.Middleware(middleware.JwtAuth, middleware.Casbin)
+//	private.Middleware(middleware.Authentication, middleware.Casbin)
 //	{
 //		system.NewUserRouter(private).Private().PrivateWithoutRecord()
 //		system.NewCasbinRouter(private).Private().PrivateWithoutRecord()

@@ -9,7 +9,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-type AuthController struct{}
+type AuthController struct {
+	g.Meta `path:"/auth"`
+}
 
 // RegisterReq -----------------------------------------------------
 type RegisterReq struct {

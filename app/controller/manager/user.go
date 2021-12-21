@@ -10,7 +10,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-type UserController struct{}
+type UserController struct {
+	g.Meta `path:"/user"`
+}
 
 type RegisterReq struct {
 	g.Meta   `path:"/register" method:"post"`
@@ -61,7 +63,7 @@ type UpdateReq struct {
 
 func (UserController) Update(ctx context.Context, req *UpdateReq) (*res.BlankRes, error) {
 	var request = g.RequestFromCtx(ctx)
-	var id = util.Auth.GetUserInfo(request).Id
+	var id = util.Auth.GetAuthInfo(request).Id
 	var info = system.UserUpdateParams{
 		Id:       id,
 		Avatar:   req.Avatar,

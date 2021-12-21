@@ -7,7 +7,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-type CaptchaController struct{}
+type CaptchaController struct {
+	g.Meta `path:"/captcha"`
+}
 
 type GenerateReq struct {
 	g.Meta `path:"/" method:"post"`

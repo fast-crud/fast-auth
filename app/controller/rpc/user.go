@@ -8,7 +8,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-type UserController struct{}
+type UserController struct {
+	g.Meta `path:"/user"`
+}
 
 type ResetPasswordReq struct {
 	g.Meta      `path:"/resetPassword" method:"post" auth:"false"`

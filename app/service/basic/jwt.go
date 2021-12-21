@@ -23,13 +23,13 @@ func NewJWT() *JwtService {
 }
 
 // CreateToken 创建一个token
-func (jwtService *JwtService) CreateToken(claims *auth.JwtClaims) (string, error) {
+func (jwtService *JwtService) CreateToken(claims *auth.Claims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(jwtService.SigningKey)
 }
 
 // CreateTokenByOldToken 旧token 换新token 使用归并回源避免并发问题
-func (jwtService *JwtService) CreateTokenByOldToken(oldToken string, claims *auth.JwtClaims) (string, error) {
+func (jwtService *JwtService) CreateTokenByOldToken(oldToken string, claims *auth.Claims) (string, error) {
 	v, err, _ := global.ConcurrencyControl.Do("JwtService:"+oldToken, func() (interface{}, error) {
 		return jwtService.CreateToken(claims)
 	})
@@ -37,8 +37,8 @@ func (jwtService *JwtService) CreateTokenByOldToken(oldToken string, claims *aut
 }
 
 // ParseToken 解析 token
-func (jwtService *JwtService) ParseToken(tokenString string) (*auth.JwtClaims, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &auth.JwtClaims{}, func(token *jwt.Token) (i interface{}, e error) {
+func (jwtService *JwtService) ParseToken(tokenString string) (*auth.Claims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &auth.Claims{}, func(token *jwt.Token) (i interface{}, e error) {
 		return jwtService.SigningKey, nil
 	})
 	if err != nil {
@@ -56,7 +56,7 @@ func (jwtService *JwtService) ParseToken(tokenString string) (*auth.JwtClaims, e
 		}
 	}
 	if token != nil {
-		if claims, ok := token.Claims.(*auth.JwtClaims); ok && token.Valid {
+		if claims, ok := token.Claims.(*auth.Claims); ok && token.Valid {
 			return claims, nil
 		}
 		return nil, TokenInvalid

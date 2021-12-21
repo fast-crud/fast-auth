@@ -7,8 +7,7 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 
-// MiddlewareHandlerResponse is the default middleware handling handler response object and its error.
-func ErrorHandler(r *ghttp.Request) {
+func ResponseHandler(r *ghttp.Request) {
 	r.Middleware.Next()
 
 	// There's custom buffer content, it then exits current handler.
@@ -22,6 +21,13 @@ func ErrorHandler(r *ghttp.Request) {
 		res interface{}
 	)
 	res, err = r.GetHandlerResponse()
+	if err == nil {
+		var err1 = r.GetCtxVar("error").Val()
+		if err1 != nil {
+			err = err1.(error)
+		}
+	}
+	//异常返回
 	if err != nil {
 		g.Log().Error(ctx, "请求出错!", g.Map{"err": err})
 		code := gerror.Code(err)
@@ -34,23 +40,8 @@ func ErrorHandler(r *ghttp.Request) {
 			Data:    nil,
 		})
 		return
-	} else {
-		var err1 = r.GetCtxVar("error").Val()
-		if err1 != nil {
-			var err = err1.(error)
-			g.Log().Error(ctx, "请求出错!", g.Map{"err": err})
-			code := gerror.Code(err)
-			if code == gcode.CodeNil {
-				code = gcode.CodeInternalError
-			}
-			writeResponse(r, &ghttp.DefaultHandlerResponse{
-				Code:    code.Code(),
-				Message: err.Error(),
-				Data:    nil,
-			})
-			return
-		}
 	}
+	//正常返回
 	writeResponse(r, &ghttp.DefaultHandlerResponse{
 		Code:    gcode.CodeOK.Code(),
 		Message: "",

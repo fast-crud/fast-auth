@@ -12,6 +12,9 @@ type Application struct {
 	Logo           string `json:"logo" gorm:"comment:Logo"`
 	Code           string `json:"code" gorm:"comment:应用名称"`
 	Name           string `json:"name" gorm:"comment:显示名称"`
+	ClientId       string `json:"clientId" gorm:"comment:ClientId"`
+	ClientSecret   string `json:"clientSecret" gorm:"comment:ClientSecret"`
+	RedirectUris   string `json:"redirectUris" gorm:"comment:重定向url列表"`
 }
 
 func (app *Application) BeforeCreate(tx *gorm.DB) error {

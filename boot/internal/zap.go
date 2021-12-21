@@ -12,7 +12,7 @@ var Zap = new(_zap)
 type _zap struct{}
 
 // GetEncoderConfig 获取 zapcore.EncoderConfig
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (z *_zap) GetEncoderConfig() (config zapcore.EncoderConfig) {
 	config = zapcore.EncoderConfig{
 		MessageKey:     "message",
@@ -41,7 +41,7 @@ func (z *_zap) GetEncoderConfig() (config zapcore.EncoderConfig) {
 }
 
 // GetEncoder 获取 zapcore.Encoder
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (z *_zap) GetEncoder() zapcore.Encoder {
 	if global.Config.Zap.Format == "json" {
 		return zapcore.NewJSONEncoder(z.GetEncoderConfig())
@@ -50,13 +50,13 @@ func (z *_zap) GetEncoder() zapcore.Encoder {
 }
 
 // GetEncoderCore 获取Encoder的 zapcore.Core
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (z *_zap) GetEncoderCore(writer zapcore.WriteSyncer, level zapcore.Level) (core zapcore.Core) {
 	return zapcore.NewCore(z.GetEncoder(), writer, level)
 }
 
 // CustomTimeEncoder 自定义日志输出时间格式
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (z *_zap) CustomTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 	enc.AppendString(t.Format(global.Config.Zap.Prefix + "2006-01-02 15:04:05.000"))
 }

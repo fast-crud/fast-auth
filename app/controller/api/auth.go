@@ -10,12 +10,12 @@ import (
 )
 
 type AuthController struct {
-	g.Meta `path:"/auth"`
+	g.Meta `path:"/"`
 }
 
 // RegisterReq -----------------------------------------------------
 type RegisterReq struct {
-	g.Meta   `path:"/register" method:"post"`
+	g.Meta   `path:"/register" method:"post" auth:"false"`
 	Avatar   string `json:"avatar"`
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -41,7 +41,7 @@ func (AuthController) Register(ctx context.Context, req *RegisterReq) (res *Regi
 
 // LoginReq -----------------------------------------------------
 type LoginReq struct {
-	g.Meta    `path:"/login" method:"post" auth:"false" per:"false"`
+	g.Meta    `path:"/login" method:"post" auth:"false" `
 	Captcha   string `json:"captcha" example:"验证码"`
 	Username  string `json:"username" example:"用户名"`
 	Password  string `json:"password" example:"密码"`

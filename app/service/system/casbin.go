@@ -20,7 +20,7 @@ var (
 type _casbin struct{}
 
 // Casbin 持久化到数据库  引入自定义规则
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *_casbin) Casbin() *casbin.SyncedEnforcer {
 	once.Do(func() {
 		a, _ := adapter.NewAdapterByDB(global.Db)
@@ -33,7 +33,7 @@ func (s *_casbin) Casbin() *casbin.SyncedEnforcer {
 }
 
 // Clear 清除匹配的权限
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *_casbin) Clear(v int, p ...string) bool {
 	e := s.Casbin()
 	success, _ := e.RemoveFilteredPolicy(v, p...)
@@ -41,14 +41,14 @@ func (s *_casbin) Clear(v int, p ...string) bool {
 }
 
 // ParamsMatch 自定义规则函数
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *_casbin) ParamsMatch(fullNameKey1 string, key2 string) bool {
 	key1 := strings.Split(fullNameKey1, "?")[0] // 剥离路径后再使用casbin的keyMatch2
 	return util.KeyMatch2(key1, key2)
 }
 
 // ParamsMatchFunc 自定义规则函数
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *_casbin) ParamsMatchFunc(args ...interface{}) (interface{}, error) {
 	name1 := args[0].(string)
 	name2 := args[1].(string)

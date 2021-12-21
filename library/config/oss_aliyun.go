@@ -12,7 +12,7 @@ type Aliyun struct {
 }
 
 // Filepath 上传阿里云路径 文件名格式 自己可以改 建议保证唯一性
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (a *Aliyun) Filepath(filename string) string {
 	return a.BasePath + "/" + "uploads" + "/" + time.Now().Format("2006-01-02") + "/" + filename
 }

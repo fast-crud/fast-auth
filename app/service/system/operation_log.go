@@ -17,13 +17,13 @@ type OperationLogCreateParams struct {
 }
 
 // Create 创建记录
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *operationLog) Create(info *OperationLogCreateParams) error {
 	return global.Db.Create(&info.OperationLog).Error
 }
 
 // First 根据id获取单条操作记录
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *operationLog) First(info *common.GetByID) (data *system.OperationLog, err error) {
 	var entity system.OperationLog
 	if err = global.Db.Where("id = ?", info.Id).First(&entity).Error; err != nil {
@@ -33,13 +33,13 @@ func (s *operationLog) First(info *common.GetByID) (data *system.OperationLog, e
 }
 
 // Delete 删除操作记录
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *operationLog) Delete(info *common.GetByID) error {
 	return global.Db.Delete(&system.OperationLog{}, info.Id).Error
 }
 
 // Deletes 批量删除记录
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *operationLog) Deletes(ids *common.GetByIDs) error {
 	return global.Db.Delete(&[]system.OperationLog{}, "id in (?)", ids.Ids).Error
 }
@@ -52,7 +52,7 @@ type OperationRecordSearchParams struct {
 }
 
 // GetList 分页获取操作记录列表
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *operationLog) GetList(info *OperationRecordSearchParams) (list []system.OperationLog, total int64, err error) {
 	db := global.Db.Model(&system.OperationLog{})
 	var entities []system.OperationLog

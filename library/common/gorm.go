@@ -3,7 +3,7 @@ package common
 import "gorm.io/gorm"
 
 // Paginate 分页器
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func Paginate(info *PageInfo) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		switch {

@@ -11,7 +11,7 @@ import (
 )
 
 // GetWriteSyncer zap logger中加入file-rotatelogs
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (z *_zap) GetWriteSyncer() (zapcore.WriteSyncer, error) {
 	fileWriter, err := logs.New(
 		path.Join(global.Config.Zap.Director, "%Y-%m-%d.log"),

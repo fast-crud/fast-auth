@@ -21,7 +21,7 @@ const (
 )
 
 // AutoCode
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (i *injection) AutoCode(filepath string, funcName string, codeData string) error {
 	srcData, err := ioutil.ReadFile(filepath)
 	if err != nil {

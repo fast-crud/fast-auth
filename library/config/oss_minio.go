@@ -17,7 +17,7 @@ type Minio struct {
 }
 
 // Filename 文件名格式 自己可以改 建议保证唯一性
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (m *Minio) Filename(filename string) string {
 	folder := time.Now().Format("2006-01-02")
 	return fmt.Sprintf("%s/%d%s", folder, time.Now().Unix(), filename)

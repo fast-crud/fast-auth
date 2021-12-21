@@ -13,7 +13,7 @@ type Local struct {
 }
 
 // Filename 拼接新文件名
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (l *Local) Filename(filename string) string {
 	ext := path.Ext(filename)                 // 读取文件后缀
 	name := strings.TrimSuffix(filename, ext) // 读取文件名并加密
@@ -22,7 +22,7 @@ func (l *Local) Filename(filename string) string {
 }
 
 // Filepath 拼接路径和文件名
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (l *Local) Filepath(filename string) string {
 	return l.Path + "/" + filename
 }

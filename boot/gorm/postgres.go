@@ -18,7 +18,7 @@ type _postgres struct {
 }
 
 // GetGormDialector 获取数据库的 gorm.Dialector
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (p *_postgres) GetGormDialector(dsn string) gorm.Dialector {
 	return postgres.New(postgres.Config{
 		DSN:                  dsn,

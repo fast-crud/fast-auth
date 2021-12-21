@@ -16,7 +16,7 @@ var Gorm = new(_gorm)
 type _gorm struct{}
 
 // GenerateConfig 根据配置文件生成对应 *gorm.Config
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (g *_gorm) GenerateConfig() *gorm.Config {
 	_config := &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true}
 	_default := logger.New(NewWriter(log.New(os.Stdout, "\r\n", log.LstdFlags)), logger.Config{

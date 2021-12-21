@@ -10,7 +10,7 @@ import (
 )
 
 type OauthController struct {
-	g.Meta `path:"/oauth"`
+	g.Meta `path:"/oauth/casdoor"`
 }
 
 type CallbackReq struct {

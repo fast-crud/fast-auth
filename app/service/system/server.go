@@ -56,7 +56,7 @@ type Disk struct {
 }
 
 // GetServerInfo 获取服务器信息
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *_server) GetServerInfo() (data *ServerRes, err error) {
 	server := ServerRes{Os: s.InitOs()}
 	if server.Cpu, err = s.InitCpu(); err != nil {
@@ -73,7 +73,7 @@ func (s *_server) GetServerInfo() (data *ServerRes, err error) {
 }
 
 // InitOs 获取系统信息 组装数据为 response.Os
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *_server) InitOs() Os {
 	return Os{
 		GOOS:         runtime.GOOS,
@@ -85,7 +85,7 @@ func (s *_server) InitOs() Os {
 }
 
 // InitCpu 获取CPU信息 组装数据为 response.Cpu
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *_server) InitCpu() (Cpu, error) {
 	var _cpu Cpu
 	cores, err := cpu.Counts(false)
@@ -101,7 +101,7 @@ func (s *_server) InitCpu() (Cpu, error) {
 }
 
 // InitRAM 获取ARM信息 组装数据为 Rrm
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *_server) InitRAM() (Rrm, error) {
 	var arm Rrm
 	virtualMemoryStat, err := mem.VirtualMemory()
@@ -115,7 +115,7 @@ func (s *_server) InitRAM() (Rrm, error) {
 }
 
 // InitDisk 获取硬盘信息 组装数据为 Disk
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (s *_server) InitDisk() (Disk, error) {
 	var _disk Disk
 	usageStat, err := disk.Usage("/")

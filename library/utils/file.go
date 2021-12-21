@@ -14,7 +14,7 @@ var File = new(file)
 type file struct{}
 
 // TrimSpace 去除结构体空格(目标结构体,传入必须是指针类型)
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (f *file) TrimSpace(target interface{}) {
 	t := reflect.TypeOf(target)
 	if t.Kind() != reflect.Ptr {
@@ -31,7 +31,7 @@ func (f *file) TrimSpace(target interface{}) {
 }
 
 // Move 文件移动 src: 源位置,绝对路径or相对路径, dst: 目标位置,绝对路径or相对路径,必须为文件夹
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (f *file) Move(src string, dst string) error {
 	var err error
 	if dst == "" || src == "" {
@@ -60,7 +60,7 @@ Redirect:
 }
 
 // ZipFiles
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 func (f *file) ZipFiles(filename string, files []string, oldForm, newForm string) error {
 	newZipFile, err := os.Create(filename)
 	if err != nil {

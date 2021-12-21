@@ -13,7 +13,7 @@ var Routers = new(_router)
 type _router struct{}
 
 func (r *_router) bind(group *ghttp.RouterGroup, basePath string, controller interface{}, middlewares ...ghttp.HandlerFunc) {
-	var metaPath = gmeta.Get(controller, "groupPath")
+	var metaPath = gmeta.Get(controller, "path")
 	var groupPath = basePath
 	if metaPath != nil {
 		groupPath += metaPath.String()
@@ -51,7 +51,7 @@ func (r *_router) Register() {
 }
 
 //// PublicRouter 公开路由组初始化
-//// Author [SliverHorn](https://github.com/SliverHorn)
+//
 //func (r *_router) PublicRouter() *_router {
 //	public := g.Server().Group("")
 //	{
@@ -66,7 +66,7 @@ func (r *_router) Register() {
 
 //
 //// PrivateRouter 私有路由组初始化
-//// Author [SliverHorn](https://github.com/SliverHorn)
+//
 //func (r *_router) PrivateRouter() *_router {
 //	private := g.Server().Group("")
 //	private.Middleware(middleware.Authentication, middleware.Casbin)

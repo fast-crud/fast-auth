@@ -56,7 +56,7 @@ func (s *jwtBlacklist) ValidatorRedisToken(userUUID string, oldToken string) boo
 }
 
 // LoadJwt 加载jwt黑名单到 global.JwtCache 中
-// Author [SliverHorn](https://github.com/SliverHorn)
+
 //func (s *jwtBlacklist) LoadJwt() {
 //	var data []string
 //	err := global.Db.Model(&system.JwtBlacklist{}).Select("jwt").Find(&data).Error

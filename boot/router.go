@@ -2,6 +2,7 @@ package boot
 
 import (
 	"github.com/fast-crud/fast-auth/app/controller/api"
+	"github.com/fast-crud/fast-auth/app/controller/rpc"
 	"github.com/fast-crud/fast-auth/boot/middleware"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -30,11 +31,10 @@ func (r *_router) bind(group *ghttp.RouterGroup, basePath string, controller int
 }
 func (r *_router) Register() {
 	g.Server().Use(middleware.ResponseHandler)
-
+	g.Server().Use(middleware.Authentication)
 	//注册 api 和 manager
 	g.Server().Group("", func(group *ghttp.RouterGroup) {
-		group.Middleware(middleware.Authentication)
-		group.Middleware(middleware.Casbin)
+		group.Middleware(middleware.UserAuthz)
 
 		r.bind(group, "/api", new(api.AuthController))
 		r.bind(group, "/api", new(api.UserController))
@@ -44,8 +44,8 @@ func (r *_router) Register() {
 
 	//注册 rpc
 	g.Server().Group("", func(group *ghttp.RouterGroup) {
-		group.Middleware(middleware.BasicAuth)
-		r.bind(group, "/rpc", new(api.UserController))
+		group.Middleware(middleware.AppAuthz)
+		r.bind(group, "/rpc", new(rpc.UserController))
 	})
 
 }

@@ -8,8 +8,7 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 
-// Casbin Casbin拦截器
-func Casbin(r *ghttp.Request) {
+func UserAuthz(r *ghttp.Request) {
 	authClaims := r.GetCtxVar(constants.CtxAuth)
 	if authClaims.Val() == nil {
 		r.Middleware.Next()

@@ -4,8 +4,9 @@ import "gorm.io/gorm"
 
 // PageInfo Paging common input parameter structure
 type PageInfo struct {
-	Page     int `json:"page" form:"page" swaggertype:"string" example:"int 页码"`
-	PageSize int `json:"pageSize" form:"pageSize" swaggertype:"string" example:"int 每页大小"`
+	Page     int   `json:"page" form:"page" swaggertype:"string" example:"int 页码"`
+	PageSize int   `json:"pageSize" form:"pageSize" swaggertype:"string" example:"int 每页大小"`
+	Total    int64 `json:"total" form:"page" swaggertype:"string" example:"int 总记录数"`
 }
 
 // Paginate 分页器

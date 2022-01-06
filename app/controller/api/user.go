@@ -43,7 +43,7 @@ type UpdateRes struct {
 func (UserController) Update(ctx context.Context, req *UpdateReq) (res *UpdateRes, err error) {
 	var request = g.RequestFromCtx(ctx)
 	var id = util.Auth.GetAuthInfo(request).Id
-	var info = system.UserUpdateParams{
+	var info = system.UserUpdateReq{
 		Id:       id,
 		Avatar:   req.Avatar,
 		NickName: req.NickName,
@@ -81,7 +81,7 @@ func (UserController) ChangePassword(ctx context.Context, req *ChangePasswordReq
 	var request = g.RequestFromCtx(ctx)
 	var user = util.Auth.GetAuthInfo(request)
 	var id = user.Id
-	var params = system.UserChangePasswordParams{
+	var params = system.UserChangePasswordReq{
 		Id:          id,
 		Password:    req.Password,
 		NewPassword: req.NewPassword,

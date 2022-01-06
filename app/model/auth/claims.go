@@ -7,7 +7,6 @@ type Claims struct {
 	Username   string
 	RoleIds    []uint
 	BufferTime int64
-	Type       string //认证类型：basic,jwt
-	From       string
+	Type       string //认证类型：user,app
 	jwt.StandardClaims
 }

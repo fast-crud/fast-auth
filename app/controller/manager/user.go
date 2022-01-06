@@ -26,7 +26,7 @@ type RegisterRes struct {
 }
 
 func (UserController) Add(ctx context.Context, req *RegisterReq) (*RegisterRes, error) {
-	var info = system.UserRegisterParams{
+	var info = system.UserRegisterReq{
 		Avatar:   req.Avatar,
 		Username: req.Username,
 		Password: req.Password,
@@ -64,7 +64,7 @@ type UpdateReq struct {
 func (UserController) Update(ctx context.Context, req *UpdateReq) (*res.BlankRes, error) {
 	var request = g.RequestFromCtx(ctx)
 	var id = util.Auth.GetAuthInfo(request).Id
-	var info = system.UserUpdateParams{
+	var info = system.UserUpdateReq{
 		Id:       id,
 		Avatar:   req.Avatar,
 		NickName: req.NickName,

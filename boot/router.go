@@ -34,7 +34,7 @@ func (r *_router) Register() {
 	g.Server().Use(middleware.Authentication)
 	//注册 api 和 manager
 	g.Server().Group("", func(group *ghttp.RouterGroup) {
-		group.Middleware(middleware.UserAuthz)
+		group.Middleware(middleware.AuthzUser)
 
 		r.bind(group, "/api", new(api.AuthController))
 		r.bind(group, "/api", new(api.UserController))
@@ -44,7 +44,7 @@ func (r *_router) Register() {
 
 	//注册 rpc
 	g.Server().Group("", func(group *ghttp.RouterGroup) {
-		group.Middleware(middleware.AppAuthz)
+		group.Middleware(middleware.AuthzApp)
 		r.bind(group, "/rpc", new(rpc.UserController))
 	})
 

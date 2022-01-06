@@ -7,7 +7,12 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 
-func AppAuthz(r *ghttp.Request) {
+//
+// AuthzApp
+// @Description: rpc鉴权
+// @param r
+//
+func AuthzApp(r *ghttp.Request) {
 	authClaims := r.GetCtxVar(constants.CtxAuth)
 	if authClaims.Val() == nil {
 		r.Middleware.Next()

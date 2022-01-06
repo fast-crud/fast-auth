@@ -27,3 +27,8 @@ func (app *Application) BeforeCreate(tx *gorm.DB) error {
 func (app *Application) TableName() string {
 	return "a_application"
 }
+
+// CompareHashAndPassword 密码检查 false 校验失败, true 校验成功
+func (app *Application) CompareHashAndSecret(secret string) bool {
+	return app.ClientSecret == secret
+}

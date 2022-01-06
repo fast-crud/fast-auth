@@ -15,6 +15,9 @@ import (
 )
 
 // Authentication
+// @Description:  token认证
+// @param r
+//
 func Authentication(r *ghttp.Request) {
 	var needAuth = GetRequestAnnotationAuth(r)
 	if needAuth == "false" {

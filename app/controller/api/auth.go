@@ -26,7 +26,7 @@ type RegisterRes struct {
 }
 
 func (AuthController) Register(ctx context.Context, req *RegisterReq) (res *RegisterRes, err error) {
-	var info = system.UserRegisterParams{
+	var info = system.UserRegisterReq{
 		Avatar:   req.Avatar,
 		Username: req.Username,
 		Password: req.Password,
@@ -55,7 +55,7 @@ func (AuthController) Login(ctx context.Context, req *LoginReq) (res *res.Access
 			return nil, errors.New("验证码错误")
 		}
 	}
-	token, err := system.UserService.Login(req.Username, req.Password)
+	token, err := system.AuthService.Login(req.Username, req.Password)
 	if err != nil {
 		return nil, err
 	}

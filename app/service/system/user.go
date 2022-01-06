@@ -2,29 +2,32 @@ package system
 
 import (
 	"github.com/fast-crud/fast-auth/app/constants"
-	auth2 "github.com/fast-crud/fast-auth/app/model/auth"
 	"github.com/fast-crud/fast-auth/app/model/basic/res"
-	"github.com/fast-crud/fast-auth/app/service/basic"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"time"
-
 	"github.com/fast-crud/fast-auth/app/model/system"
 	"github.com/fast-crud/fast-auth/library/common"
 	"github.com/fast-crud/fast-auth/library/global"
-	"github.com/golang-jwt/jwt"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
 
 var UserService = new(userService)
 
-type userService struct{}
+type userService struct {
+	g.Meta `path:"/user"`
+}
 
-type UserRegisterParams struct {
+type UserRegisterReq struct {
+	g.Meta   `path:"/register" method:"post" auth:"false"`
 	Avatar   string
 	Username string
 	Password string
 	NickName string
+}
+
+type UserInfoRes struct {
+	system.User
 }
 
 // Register
@@ -33,16 +36,16 @@ type UserRegisterParams struct {
 // @param info
 // @return data
 // @return err
-func (userService *userService) Register(info *UserRegisterParams) (data *system.User, err error) {
+func (userService *userService) Register(req *UserRegisterReq) (res *UserInfoRes, err error) {
 	var entity system.User
-	if !errors.Is(global.Db.Where("username = ?", info.Username).First(&entity).Error, gorm.ErrRecordNotFound) { // 判断用户名是否注册
+	if !errors.Is(global.Db.Where("username = ?", req.Username).First(&entity).Error, gorm.ErrRecordNotFound) { // 判断用户名是否注册
 		return nil, errors.Wrap(err, "用户名已注册")
 	}
 	entity = system.User{
-		Avatar:   info.Avatar,
-		Username: info.Username,
-		Password: info.Password,
-		NickName: info.NickName,
+		Avatar:   req.Avatar,
+		Username: req.Username,
+		Password: req.Password,
+		NickName: req.NickName,
 	}
 	if err = entity.EncryptedPassword(); err != nil {
 		return nil, errors.Wrap(err, "密码加密失败!")
@@ -50,26 +53,12 @@ func (userService *userService) Register(info *UserRegisterParams) (data *system
 	if err = global.Db.Create(&entity).Error; err != nil {
 		return nil, errors.Wrap(err, "用户注册失败!")
 	}
-	return &entity, nil
+	return &UserInfoRes{User: entity}, nil
 }
 
-// Login
-// @Description: 用户登录接口
-// @receiver userService
-// @param username
-// @param password
-// @return token
-// @return err
-//
-func (userService *userService) Login(username string, password string) (token *res.AccessTokenRes, err error) {
-	var entity system.User
-	if errors.Is(global.Db.Where("username = ?", username).Preload("Roles").First(&entity).Error, gorm.ErrRecordNotFound) {
-		return nil, gerror.NewCode(constants.CodeUserNotExists)
-	}
-	if !entity.CompareHashAndPassword(password) {
-		return nil, errors.New("密码错误!")
-	}
-	return userService.tokenCreate(&entity)
+type UserGetByIdReq struct {
+	g.Meta `path:"/getById" method:"post" auth:"false"`
+	Id     uint
 }
 
 //
@@ -80,26 +69,28 @@ func (userService *userService) Login(username string, password string) (token *
 // @return data
 // @return err
 //
-func (userService *userService) GetById(Id uint) (data *system.User, err error) {
-	if Id == 0 {
+func (userService *userService) GetById(req UserGetByIdReq) (res *UserInfoRes, err error) {
+	if req.Id == 0 {
 		return nil, gerror.NewCode(constants.CodeParamCantBlank)
 	}
 	var entity system.User
 	var search = func(db *gorm.DB) *gorm.DB {
-		if Id != 0 {
-			db = db.Where("id = ?", Id)
-		}
+		db = db.Where("id = ?", req.Id)
 		return db
 	}
 	if err = global.Db.Scopes(search).Preload("Roles").First(&entity).Error; err != nil {
 		return nil, gerror.NewCode(constants.CodeUserFindError)
 	}
-	return &entity, nil
+	return &UserInfoRes{User: entity}, nil
 }
 
-type UserFindParams struct {
+type UserFindReq struct {
+	g.Meta   `path:"/find" method:"post" auth:"false"`
 	Id       uint   `json:"id" example:"7"`
 	Username string `json:"username" example:"7"`
+}
+type UserListRes struct {
+	List []system.User
 }
 
 //
@@ -110,28 +101,19 @@ type UserFindParams struct {
 //  @return data
 //  @return err
 //
-func (userService *userService) Find(userFindParams *UserFindParams) (data *system.User, err error) {
-	var entity system.User
-
-	if userFindParams.Username == "" && userFindParams.Id == 0 {
+func (userService *userService) Find(req *UserFindReq) (res *UserListRes, err error) {
+	var list []system.User
+	if req.Username == "" && req.Id == 0 {
 		return nil, gerror.NewCode(constants.CodeParamCantBlank)
 	}
-	var search = func(db *gorm.DB) *gorm.DB {
-		if userFindParams.Id != 0 {
-			db = db.Where("id = ?", userFindParams.Id)
-		}
-		if userFindParams.Username != "" {
-			db = db.Where("username = ?", userFindParams.Username)
-		}
-		return db
-	}
-	if err = global.Db.Scopes(search).Preload("Roles").First(&entity).Error; err != nil {
+	if err = global.Db.Where(&req).Preload("Roles").Find(&list).Error; err != nil {
 		return nil, errors.Wrap(err, "用户查询失败!")
 	}
-	return &entity, nil
+	return &UserListRes{List: list}, nil
 }
 
-type UserUpdateParams struct {
+type UserUpdateReq struct {
+	g.Meta   `path:"/update" method:"post" auth:"false"`
 	Id       uint   `json:"id" example:"uint 主键ID"`
 	Avatar   string `json:"avatar" example:"用户头像"`
 	NickName string `json:"nickName" example:"用户昵称"`
@@ -144,16 +126,17 @@ type UserUpdateParams struct {
 // @return user
 // @return err
 //
-func (userService *userService) Update(userUpdateParams *UserUpdateParams) (user *system.User, err error) {
+func (userService *userService) Update(req *UserUpdateReq) (*res.BlankRes, error) {
 	update := system.User{
-		Avatar:   userUpdateParams.Avatar,
-		NickName: userUpdateParams.NickName,
+		Avatar:   req.Avatar,
+		NickName: req.NickName,
 	}
-	err = global.Db.Where("id = ?", userUpdateParams.Id).Updates(&update).Error
-	return &update, err
+	var err = global.Db.Where("id = ?", req.Id).Updates(&update).Error
+	return res.NewBlankRes(), err
 }
 
-type UserChangePasswordParams struct {
+type UserChangePasswordReq struct {
+	g.Meta      `path:"/changePassword" method:"post" auth:"false"`
 	Id          uint   `json:"id"`
 	Password    string `json:"password"`
 	NewPassword string `json:"newPassword"`
@@ -164,20 +147,28 @@ type UserChangePasswordParams struct {
 // @receiver userService
 // @param params
 // @return error
-func (userService *userService) ChangePassword(params *UserChangePasswordParams) error {
+func (userService *userService) ChangePassword(req *UserChangePasswordReq) (*res.BlankRes, error) {
 	var entity system.User
-	err := global.Db.Where("id = ?", params.Id).First(&entity).Error
+	err := global.Db.Where("id = ?", req.Id).First(&entity).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return errors.Wrap(err, "用户不存在! ")
+		return nil, errors.Wrap(err, "用户不存在! ")
 	}
-	if !entity.CompareHashAndPassword(params.Password) {
-		return errors.Wrap(err, "密码错误!")
+	if !entity.CompareHashAndPassword(req.Password) {
+		return nil, errors.Wrap(err, "密码错误!")
 	}
-	entity.Password = params.NewPassword
+	entity.Password = req.NewPassword
 	if err = entity.EncryptedPassword(); err != nil {
-		return errors.Wrap(err, "密码加密失败!")
+		return nil, errors.Wrap(err, "密码加密失败!")
 	}
-	return global.Db.Where("id = ?", params.Id).Update("password", entity.Password).Error
+	err = global.Db.Where("id = ?", req.Id).Update("password", entity.Password).Error
+	return res.NewBlankRes(), err
+}
+
+type UserResetPasswordReq struct {
+	g.Meta      `path:"/resetPassword" method:"post" auth:"false"`
+	Id          uint   `json:"id"`
+	Password    string `json:"password"`
+	NewPassword string `json:"newPassword"`
 }
 
 // RestPassword
@@ -185,61 +176,51 @@ func (userService *userService) ChangePassword(params *UserChangePasswordParams)
 // @receiver userService
 // @param params
 // @return error
-func (userService *userService) ResetPassword(Id uint, NewPassword string) error {
+func (userService *userService) ResetPassword(req UserResetPasswordReq) (*res.BlankRes, error) {
 	var entity system.User
-	err := global.Db.Where("id = ?", Id).First(&entity).Error
+	err := global.Db.Where("id = ?", req.Id).First(&entity).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return errors.Wrap(err, "用户不存在! ")
+		return nil, errors.Wrap(err, "用户不存在! ")
 	}
-	entity.Password = NewPassword
+	entity.Password = req.NewPassword
 	if err = entity.EncryptedPassword(); err != nil {
-		return errors.Wrap(err, "密码加密失败!")
+		return nil, errors.Wrap(err, "密码加密失败!")
 	}
-	return global.Db.Model(&entity).Where("id = ?", Id).Update("password", entity.Password).Error
+	err = global.Db.Model(&entity).Where("id = ?", req.Id).Update("password", entity.Password).Error
+	return nil, err
 }
 
-func (userService *userService) Delete(Id uint) error {
-	return global.Db.Delete(&system.User{}, Id).Error
+type UserDeleteReq struct {
+	g.Meta `path:"/resetPassword" method:"post" auth:"false"`
+	Id     uint `json:"id"`
+}
+
+func (userService *userService) Delete(req UserDeleteReq) (*res.BlankRes, error) {
+	var err = global.Db.Delete(&system.User{}, req.Id).Error
+	return nil, err
+}
+
+type UserPageReq struct {
+	g.Meta `path:"/page" method:"post" auth:"false"`
+	common.PageInfo
+	AppId          uint `json:"appId"`
+	OrganizationId uint `json:"organizationId"`
+}
+
+type UserPageRes struct {
+	common.PageInfo
+	List []system.User
 }
 
 // GetList 获取用户列表
-func (userService *userService) GetList(info *common.PageInfo) (list []system.User, total int64, err error) {
-	entities := make([]system.User, 0, info.PageSize)
+func (userService *userService) Page(req *UserPageReq) (*UserPageRes, error) {
+	var entities []system.User
+	var total int64
 	db := global.Db.Model(&system.User{})
-	err = db.Count(&total).Error
-	err = db.Scopes(common.Paginate(info)).Preload("Authority").Preload("Authorities").Find(&entities).Error
-	return entities, total, err
-}
-
-//
-//  tokenCreate
-//  @Description: token生成
-//  @receiver s
-//  @param user
-//  @return *response.UserLogin
-//  @return error
-//
-func (userService *userService) tokenCreate(user *system.User) (*res.AccessTokenRes, error) {
-	_jwt := basic.NewJWT()
-	var roleIds = make([]uint, len(user.Roles))
-	for i := 0; i < len(user.Roles); i++ {
-		roleIds[i] = user.Roles[i].Id
-	}
-	claims := auth2.Claims{
-		Id:         user.Id,
-		Username:   user.Username,
-		RoleIds:    roleIds,
-		BufferTime: global.Config.Jwt.BufferTime, // 缓冲时间1天 缓冲时间内会获得新的token刷新令牌 此时一个用户会存在两个有效令牌 但是前端只留一个 另一个会丢失
-		StandardClaims: jwt.StandardClaims{
-			NotBefore: time.Now().Unix() - 1000,                          // 签名生效时间
-			ExpiresAt: time.Now().Unix() + global.Config.Jwt.ExpiresTime, // 过期时间 7天  配置文件
-			Issuer:    "handsfree",                                       // 签名的发行者
-		},
-	}
-	token, err := _jwt.CreateToken(&claims)
+	var err = db.Count(&total).Error
 	if err != nil {
-		return nil, errors.Wrap(err, "获取token失败!")
+		return nil, errors.Wrap(err, "查询失败")
 	}
-	entity := res.AccessTokenRes{User: user, Token: token, ExpiresAt: claims.StandardClaims.ExpiresAt * 1000}
-	return &entity, nil
+	err = db.Scopes(common.Paginate(&req.PageInfo)).Preload("roleIds").Find(&entities).Error
+	return &UserPageRes{List: entities, PageInfo: common.PageInfo{Total: total}}, err
 }

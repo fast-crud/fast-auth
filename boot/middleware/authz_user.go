@@ -8,7 +8,12 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 
-func UserAuthz(r *ghttp.Request) {
+//
+// AuthzUser
+// @Description: 用户鉴权
+// @param r
+//
+func AuthzUser(r *ghttp.Request) {
 	authClaims := r.GetCtxVar(constants.CtxAuth)
 	if authClaims.Val() == nil {
 		r.Middleware.Next()
